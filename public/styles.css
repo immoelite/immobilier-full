@@ -141,7 +141,7 @@ img{max-width:100%}
 .footer-bottom{text-align:center;padding:20px;margin-top:32px;border-top:1px solid rgba(255,255,255,.05);color:var(--text);font-size:.8rem}
 
 /* ========== MODALS ========== */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
 .modal{background:var(--secondary);border-radius:16px;padding:32px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;position:relative;border:1px solid rgba(212,162,84,.2)}
 .modal-large{max-width:640px}
@@ -242,7 +242,6 @@ img{max-width:100%}
 .admin-empty i{font-size:2rem;color:var(--accent);margin-bottom:10px}
 
 /* ========== EDIT MODAL ========== */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-box{background:var(--secondary);border:1px solid rgba(212,162,84,.2);border-radius:16px;width:90%;max-width:700px;max-height:85vh;overflow-y:auto;padding:28px;position:relative}
 .modal-box h3{color:var(--accent);font-size:1.2rem;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
 .modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;transition:.3s}
@@ -301,4 +300,9 @@ img{max-width:100%}
     .admin-layout{grid-template-columns:1fr}
     .admin-sidebar{display:none}
     .stat-cards{grid-template-columns:1fr 1fr}
+    .modal,.modal-large,.modal-box{max-width:100%;width:95%;padding:20px;border-radius:12px}
+    .modal-grid{grid-template-columns:1fr}
+    .form-row{flex-direction:column}
+    .modal .form-row input,.modal .form-row select{width:100%}
+    .hero-stats{flex-direction:column;gap:20px}
 }
