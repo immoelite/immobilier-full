@@ -3,11 +3,11 @@ const db = require('./db');
 function createProperty(data) {
     return new Promise((resolve, reject) => {
         db.run(
-            `INSERT INTO properties (user_id, type, category, title, description, price, wilaya, commune, address, surface, rooms, bathrooms, parking, condition, age, images, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO properties (user_id, type, category, title, description, price, wilaya, commune, address, surface, rooms, bathrooms, parking, condition, age, images, contact_phone, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [data.user_id, data.type, data.category, data.title, data.description, data.price,
              data.wilaya, data.commune, data.address, data.surface, data.rooms, data.bathrooms,
-             data.parking, data.condition, data.age, JSON.stringify(data.images || []), 'pending'],
+             data.parking, data.condition, data.age, JSON.stringify(data.images || []), data.contact_phone || null, 'pending'],
             function(err) {
                 if (err) reject(err);
                 else resolve(this.lastID);
@@ -18,7 +18,7 @@ function createProperty(data) {
 
 function getProperties(filters = {}) {
     return new Promise((resolve, reject) => {
-        let query = 'SELECT p.*, u.name as owner_name, u.phone as owner_phone FROM properties p JOIN users u ON p.user_id = u.id WHERE p.status = ?';
+        let query = 'SELECT p.*, u.name as owner_name, u.phone as owner_phone, COALESCE(p.contact_phone, u.phone) as display_phone FROM properties p JOIN users u ON p.user_id = u.id WHERE p.status = ?';
         let params = ['active'];
 
         if (filters.type) { query += ' AND p.type = ?'; params.push(filters.type); }
@@ -46,7 +46,7 @@ function getProperties(filters = {}) {
 function getPropertyById(id) {
     return new Promise((resolve, reject) => {
         db.get(
-            'SELECT p.*, u.name as owner_name, u.phone as owner_phone, u.email as owner_email FROM properties p JOIN users u ON p.user_id = u.id WHERE p.id = ?',
+            'SELECT p.*, u.name as owner_name, u.phone as owner_phone, u.email as owner_email, COALESCE(p.contact_phone, u.phone) as display_phone FROM properties p JOIN users u ON p.user_id = u.id WHERE p.id = ?',
             [id],
             (err, row) => {
                 if (err) reject(err);
@@ -61,11 +61,11 @@ function updateProperty(id, data, userId, role) {
     return new Promise((resolve, reject) => {
         let query, params;
         if (role === 'admin') {
-            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=?, status=?, featured=? WHERE id=?`;
+            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=?, contact_phone=?, status=?, featured=? WHERE id=?`;
             params = [data.type, data.category, data.title, data.description, data.price,
                       data.wilaya, data.commune, data.address, data.surface, data.rooms, data.bathrooms,
                       data.parking, data.condition, data.age, JSON.stringify(data.images || []),
-                      data.status || 'active', data.featured ? 1 : 0, id];
+                      data.contact_phone || null, data.status || 'active', data.featured ? 1 : 0, id];
         } else {
             query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=? WHERE id=? AND user_id=?`;
             params = [data.type, data.category, data.title, data.description, data.price,
@@ -99,7 +99,7 @@ function incrementViews(id) {
 function getAllPropertiesAdmin() {
     return new Promise((resolve, reject) => {
         db.all(
-            'SELECT p.*, u.name as owner_name, u.phone as owner_phone FROM properties p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC',
+            'SELECT p.*, u.name as owner_name, u.phone as owner_phone, COALESCE(p.contact_phone, u.phone) as display_phone FROM properties p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC',
             [],
             (err, rows) => {
                 if (err) reject(err);

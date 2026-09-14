@@ -40,6 +40,7 @@ db.serialize(() => {
         condition TEXT DEFAULT 'bon',
         age INTEGER DEFAULT 0,
         images TEXT DEFAULT '[]',
+        contact_phone TEXT,
         featured INTEGER DEFAULT 0,
         status TEXT DEFAULT 'active' CHECK(status IN ('active','sold','rented','expired','pending')),
         views INTEGER DEFAULT 0,
@@ -106,6 +107,19 @@ db.serialize(() => {
     db.run(`INSERT OR IGNORE INTO users (name, email, phone, password, role) VALUES 
         ('Admin', 'admin@immoelite.dz', '0550000000', '0192023a7bbd73250516f069df18b500', 'admin')
     `);
+
+    // ========== MIGRATIONS ==========
+    // Add contact_phone column if it doesn't exist
+    db.all("PRAGMA table_info(properties)", [], (err, cols) => {
+        if (!err) {
+            const hasContactPhone = cols.some(c => c.name === 'contact_phone');
+            if (!hasContactPhone) {
+                db.run("ALTER TABLE properties ADD COLUMN contact_phone TEXT", (err2) => {
+                    if (!err2) console.log('Migration: added contact_phone column to properties');
+                });
+            }
+        }
+    });
 });
 
 module.exports = db;

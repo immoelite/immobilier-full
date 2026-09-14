@@ -92,6 +92,14 @@ app.post('/api/properties', authMiddleware, upload.array('images', 5), async (re
         const images = req.files ? req.files.map(f => '/uploads/' + f.filename) : [];
         const data = { ...req.body, user_id: req.userId, images };
         data.price = parseInt(data.price);
+        // If user chose platform phone, get admin_whatsapp from settings
+        if (data.contact_phone === 'platform') {
+            const s = await new Promise(r => db.get("SELECT value FROM settings WHERE key = 'admin_whatsapp'", [], (e, row) => r(row)));
+            data.contact_phone = s?.value ? '0' + s.value.replace(/^213/, '') : null;
+        } else if (data.contact_phone === 'mine') {
+            const u = await new Promise(r => db.get('SELECT phone FROM users WHERE id = ?', [req.userId], (e, row) => r(row)));
+            data.contact_phone = u?.phone || null;
+        }
         data.surface = parseInt(data.surface);
         data.rooms = parseInt(data.rooms) || 0;
         data.bathrooms = parseInt(data.bathrooms) || 0;
@@ -109,8 +117,17 @@ app.post('/api/properties', authMiddleware, upload.array('images', 5), async (re
 
 app.put('/api/properties/:id', authMiddleware, upload.array('images', 5), async (req, res) => {
     try {
-        const images = req.files ? req.files.map(f => '/uploads/' + f.filename) : [];
+        const images = req.files && req.files.length ? req.files.map(f => '/uploads/' + f.filename) : (req.body.images ? JSON.parse(typeof req.body.images === 'string' ? req.body.images : JSON.stringify(req.body.images)) : []);
         const data = { ...req.body, images };
+        // Admin can change owner_phone
+        if (req.userRole === 'admin' && req.body.owner_phone) {
+            // Update the property owner's phone
+            db.run('UPDATE users SET phone = ? WHERE id = (SELECT user_id FROM properties WHERE id = ?)', [req.body.owner_phone, req.params.id]);
+        }
+        // Admin can also set contact_phone directly
+        if (req.userRole === 'admin' && req.body.contact_phone) {
+            data.contact_phone = req.body.contact_phone;
+        }
         const changes = await updateProperty(req.params.id, data, req.userId, req.userRole);
         res.json({ success: true, changes });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -146,7 +163,7 @@ app.get('/api/stats', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const payStats = await getPaymentStats();
         const propCount = await new Promise((resolve) => {
-            db.get('SELECT COUNT(*) as total, SUM(CASE WHEN status="active" THEN 1 ELSE 0 END) as active FROM properties', [], (err, row) => resolve(row));
+            db.get('SELECT COUNT(*) as total, SUM(CASE WHEN status="active" THEN 1 ELSE 0 END) as active, SUM(CASE WHEN status="pending" THEN 1 ELSE 0 END) as pending, SUM(views) as total_views FROM properties', [], (err, row) => resolve(row));
         });
         const userCount = await new Promise((resolve) => {
             db.get('SELECT COUNT(*) as total FROM users', [], (err, row) => resolve(row));
@@ -158,9 +175,7 @@ app.get('/api/stats', authMiddleware, adminMiddleware, async (req, res) => {
 // ========== ESTIMATION ROUTES ==========
 app.post('/api/estimation', async (req, res) => {
     try {
-        const { wilaya, category, surface, condition, age, parking } = req.body;
-        const userId = req.userId || null;
-        const result = await saveEstimation(userId, req.body);
+        const result = await saveEstimation(req.userId || null, req.body);
         res.json(result);
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -208,6 +223,57 @@ app.get('/api/admin/properties', authMiddleware, adminMiddleware, async (req, re
     catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ========== ADMIN: Users management ==========
+app.get('/api/admin/users', authMiddleware, adminMiddleware, (req, res) => {
+    db.all('SELECT id, name, email, phone, role, baridimob_rip, created_at FROM users ORDER BY created_at DESC', [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.put('/api/admin/users/:id/role', authMiddleware, adminMiddleware, (req, res) => {
+    const { role } = req.body;
+    if (!['admin', 'user'].includes(role)) return res.status(400).json({ error: 'R\u00f4le invalide' });
+    db.run('UPDATE users SET role = ? WHERE id = ?', [role, req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, changes: this.changes });
+    });
+});
+
+app.delete('/api/admin/users/:id', authMiddleware, adminMiddleware, (req, res) => {
+    const id = req.params.id;
+    // First delete user's properties and payments
+    db.run('DELETE FROM payments WHERE user_id = ?', [id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        db.run('DELETE FROM properties WHERE user_id = ?', [id], (err2) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            db.run('DELETE FROM users WHERE id = ?', [id], function(err3) {
+                if (err3) return res.status(500).json({ error: err3.message });
+                res.json({ success: true, changes: this.changes });
+            });
+        });
+    });
+});
+
+// ========== ADMIN: Create property ==========
+app.post('/api/admin/properties', authMiddleware, adminMiddleware, upload.array('images', 5), async (req, res) => {
+    try {
+        const images = req.files ? req.files.map(f => '/uploads/' + f.filename) : [];
+        const data = { ...req.body, user_id: req.userId, images };
+        data.price = parseInt(data.price);
+        data.surface = parseInt(data.surface);
+        data.rooms = parseInt(data.rooms) || 0;
+        data.bathrooms = parseInt(data.bathrooms) || 0;
+        data.age = parseInt(data.age) || 0;
+        // Admin-created properties are active by default
+        data.status = data.status || 'active';
+        data.featured = parseInt(data.featured) || 0;
+        const id = await createProperty(data);
+        res.json({ success: true, propertyId: id });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ========== ADMIN: Contacts management ==========
 app.get('/api/admin/contacts', authMiddleware, adminMiddleware, (req, res) => {
     db.all('SELECT * FROM contacts ORDER BY created_at DESC', [], (err, rows) => {
         if (err) res.status(500).json({ error: err.message });
@@ -215,5 +281,12 @@ app.get('/api/admin/contacts', authMiddleware, adminMiddleware, (req, res) => {
     });
 });
 
+app.delete('/api/admin/contacts/:id', authMiddleware, adminMiddleware, (req, res) => {
+    db.run('DELETE FROM contacts WHERE id = ?', [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, changes: this.changes });
+    });
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`ImmoElite server running on port ${PORT}`));
+app.listen(PORT, () => console.log('ImmoElite server running on port ' + PORT));

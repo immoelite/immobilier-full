@@ -273,6 +273,19 @@
                         <input type="number" id="pubAge" placeholder="Âge (années)" min="0" value="0">
                         <select id="pubParking"><option value="non">Sans parking</option><option value="oui">Avec parking</option></select>
                     </div>
+                    <div class="contact-phone-choice">
+                        <label style="color:var(--accent);font-weight:600;font-size:.95rem;margin-bottom:8px;display:block"><i class="fas fa-phone"></i> Numéro de contact affiché</label>
+                        <div class="choice-row">
+                            <label class="choice-option">
+                                <input type="radio" name="pubContactChoice" value="mine" checked>
+                                <span class="choice-box"><i class="fas fa-user"></i> Mon numéro — les acheteurs me contactent directement</span>
+                            </label>
+                            <label class="choice-option">
+                                <input type="radio" name="pubContactChoice" value="platform">
+                                <span class="choice-box"><i class="fas fa-building"></i> Numéro ImmoElite — la plateforme gère les contacts</span>
+                            </label>
+                        </div>
+                    </div>
                     <button type="button" class="btn-gold full-width" onclick="goToPubStep(2)">Suivant <i class="fas fa-arrow-right"></i></button>
                 </form>
             </div>

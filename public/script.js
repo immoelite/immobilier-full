@@ -164,7 +164,7 @@ function renderPropertyGrid(gridId, properties) {
             (p.rooms ? '<span><i class="fas fa-door-open"></i> ' + p.rooms + ' pièces</span>' : '') + '</div>' +
             '<div class="property-commission"><i class="fas fa-percentage"></i> ' + commissionLabel + ' : ' + commission + '</div>' +
             '<div class="property-actions">' +
-            '<button class="btn-whatsapp" onclick="event.stopPropagation();openWhatsApp(\'' + p.owner_phone + '\',\'' + p.title + '\')"><i class="fab fa-whatsapp"></i> WhatsApp</button>' +
+            '<button class="btn-whatsapp" onclick="event.stopPropagation();openWhatsApp(\'' + (p.display_phone || p.owner_phone) + '\',\'' + p.title + '\')"><i class="fab fa-whatsapp"></i> WhatsApp</button>' +
             '<button class="btn-detail" onclick="event.stopPropagation();openPropertyDetail(' + p.id + ')"><i class="fas fa-eye"></i> Détails</button>' +
             '</div></div></div>';
     }).join('');
@@ -211,7 +211,7 @@ async function openPropertyDetail(id) {
             (p.condition ? '<div class="property-meta"><i class="fas fa-star"></i> ' + p.condition + '</div>' : '') +
             '</div>' +
             '<div class="property-commission" style="margin-bottom:16px"><i class="fas fa-percentage"></i> Commission ImmoElite (' + commLabel + ') : ' + commission + '</div>' +
-            '<a href="https://wa.me/' + (p.owner_phone || '').replace(/^0/, '213') + '?text=' + encodeURIComponent('Bonjour, je suis intéressé par : ' + p.title) + '" target="_blank" class="btn-whatsapp" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:12px 24px;font-size:1rem"><i class="fab fa-whatsapp"></i> Contacter par WhatsApp</a>';
+            '<a href="https://wa.me/' + ((p.display_phone || p.owner_phone) || '').replace(/^0/, '213') + '?text=' + encodeURIComponent('Bonjour, je suis intéressé par : ' + p.title) + '" target="_blank" class="btn-whatsapp" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:12px 24px;font-size:1rem"><i class="fab fa-whatsapp"></i> Contacter par WhatsApp</a>';
         openModal('propertyDetailModal');
     } catch (e) { showToast('Erreur', true); }
 }
@@ -323,6 +323,8 @@ async function submitProperty() {
     formData.append('condition', document.getElementById('pubCondition').value);
     formData.append('age', document.getElementById('pubAge').value || '0');
     formData.append('parking', document.getElementById('pubParking').value);
+    const contactChoice = document.querySelector('input[name="pubContactChoice"]:checked');
+    formData.append('contact_phone', contactChoice ? contactChoice.value : 'mine');
     pubImages.forEach(f => formData.append('images', f));
     try {
         const token = localStorage.getItem('immoelite_token');
