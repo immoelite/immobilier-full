@@ -57,6 +57,8 @@ function showAdminTab(tab) {
     if (tab === 'users') loadAdminUsers();
     if (tab === 'contacts') loadAdminContacts();
     if (tab === 'settings') loadAdminSettings();
+    // Close sidebar on mobile after selecting a tab
+    closeAdminSidebar();
 }
 
 // ========== DASHBOARD ==========
@@ -398,6 +400,17 @@ async function saveSettings() {
         });
         showToast('Paramètres sauvegardés !');
     } catch (e) { showToast('Erreur', true); }
+}
+
+function openAdminSidebar() {
+    document.getElementById('adminSidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeAdminSidebar() {
+    document.getElementById('adminSidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function logout() {

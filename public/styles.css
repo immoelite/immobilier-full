@@ -205,6 +205,9 @@ img{max-width:100%}
 .admin-nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;color:var(--text);font-size:.88rem;margin-bottom:4px;transition:.3s}
 .admin-nav a:hover,.admin-nav a.active{background:rgba(212,162,84,.15);color:var(--accent)}
 .admin-nav a i{width:20px;text-align:center}
+.admin-hamburger{display:none;background:none;border:none;color:var(--white);font-size:1.4rem;cursor:pointer;padding:6px;align-items:center;justify-content:center;border-radius:6px;transition:.3s}
+.admin-hamburger:hover{background:rgba(212,162,84,.15)}
+.admin-sidebar-overlay{display:none}
 .admin-main{padding:28px;background:var(--primary)}
 .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
 .admin-header h1{font-size:1.6rem;color:var(--white)}
@@ -298,9 +301,16 @@ img{max-width:100%}
     .search-box{flex-direction:column}
     .estimation-box,.contact-grid{grid-template-columns:1fr}
     .admin-layout{grid-template-columns:1fr}
-    .admin-sidebar{display:none}
+    .admin-sidebar{display:none;position:fixed;top:0;left:0;bottom:0;width:260px;z-index:10001;overflow-y:auto;box-shadow:4px 0 20px rgba(0,0,0,.5)}
+    .admin-sidebar.open{display:block}
+    .admin-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000}
+    .admin-sidebar-overlay.active{display:block}
+    .admin-hamburger{display:flex}
+    .admin-header{flex-wrap:wrap;gap:10px}
     .stat-cards{grid-template-columns:1fr 1fr}
     .modal,.modal-large,.modal-box{max-width:100%;width:95%;padding:20px;border-radius:12px}
+    .admin-sidebar .logo{font-size:1.1rem;margin-bottom:20px}
+    .admin-nav a{padding:8px 12px;font-size:.82rem}
     .modal-grid{grid-template-columns:1fr}
     .form-row{flex-direction:column}
     .modal .form-row input,.modal .form-row select{width:100%}
