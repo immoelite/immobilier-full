@@ -15,7 +15,7 @@ const activeTokens = {};
 function authMiddleware(req, res, next) {
     const token = req.headers['authorization']?.replace('Bearer ', '');
     if (!token || !activeTokens[token]) {
-        return res.status(401).json({ error: 'Non autoris\u00e9' });
+        return res.status(401).json({ error: 'Non autorisé' });
     }
     req.userId = activeTokens[token].userId;
     req.userRole = activeTokens[token].role;
@@ -24,7 +24,7 @@ function authMiddleware(req, res, next) {
 
 function adminMiddleware(req, res, next) {
     if (req.userRole !== 'admin') {
-        return res.status(403).json({ error: 'Acc\u00e8s refus\u00e9' });
+        return res.status(403).json({ error: 'Accès refusé' });
     }
     next();
 }
@@ -95,4 +95,35 @@ function updateProfile(userId, data) {
     });
 }
 
-module.exports = { authMiddleware, adminMiddleware, register, login, getProfile, updateProfile, activeTokens };
+// Admin: change email with current password verification
+function changeAdminEmail(userId, currentPassword, newEmail) {
+    return new Promise((resolve, reject) => {
+        const hashed = hashPassword(currentPassword);
+        db.get('SELECT id FROM users WHERE id = ? AND password = ?', [userId, hashed], (err, row) => {
+            if (err) return reject(err);
+            if (!row) return reject(new Error('Mot de passe actuel incorrect'));
+            db.run('UPDATE users SET email = ? WHERE id = ?', [newEmail, userId], function(err2) {
+                if (err2) return reject(err2.code === 'SQLITE_CONSTRAINT' ? new Error('Email déjà utilisé') : err2);
+                resolve();
+            });
+        });
+    });
+}
+
+// Admin: change password with current password verification
+function changeAdminPassword(userId, currentPassword, newPassword) {
+    return new Promise((resolve, reject) => {
+        const hashed = hashPassword(currentPassword);
+        db.get('SELECT id FROM users WHERE id = ? AND password = ?', [userId, hashed], (err, row) => {
+            if (err) return reject(err);
+            if (!row) return reject(new Error('Mot de passe actuel incorrect'));
+            const newHashed = hashPassword(newPassword);
+            db.run('UPDATE users SET password = ? WHERE id = ?', [newHashed, userId], (err2) => {
+                if (err2) return reject(err2);
+                resolve();
+            });
+        });
+    });
+}
+
+module.exports = { authMiddleware, adminMiddleware, register, login, getProfile, updateProfile, changeAdminEmail, changeAdminPassword, activeTokens };

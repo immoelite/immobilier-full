@@ -1,195 +1,225 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImmoElite - Immobilier en Algérie</title>
+    <title>ImmoElite — Immobilier Algérie</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-inner">
-            <a href="/" class="logo"><i class="fas fa-building"></i> Immo<span class="gold">Elite</span></a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#vente">Vente</a></li>
-                <li><a href="#location">Location</a></li>
-                <li><a href="#estimation">Estimation</a></li>
-                <li><a href="#commissions">Commissions</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="btn-outline-sm" id="btnLogin" onclick="openModal('loginModal')"><i class="fas fa-sign-in-alt"></i> Connexion</button>
-                <button class="btn-gold-sm" id="btnRegister" onclick="openModal('registerModal')"><i class="fas fa-user-plus"></i> Inscription</button>
-                <button class="btn-gold-sm" id="btnDashboard" style="display:none" onclick="goToDashboard()"><i class="fas fa-tachometer-alt"></i> <span id="dashBtnText">Tableau de bord</span></button>
-                <button class="btn-outline-sm" id="btnLogout" style="display:none" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
-                <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    <nav class="navbar" id="mainNav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-building"></i> ImmoElite</a>
+            <div class="nav-links">
+                <a href="#properties" data-i18n="nav_annonces">Annonces</a>
+                <a href="#estimation" data-i18n="nav_estimation">Estimation</a>
+                <a href="#promos" data-i18n="nav_pros">Pros</a>
+                <a href="#contact" data-i18n="nav_contact">Contact</a>
+                <a href="tarifs.html" class="nav-link-tarifs" style="color:#d4a254; font-weight:600;" data-i18n="commissions_title">Nos Tarifs</a>
+            </div>
+            <div class="nav-right">
+                <div class="lang-selector" id="langSelector">
+                    <button class="lang-btn active" data-lang="fr">FR</button>
+                    <button class="lang-btn" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <button class="btn-publish" onclick="openPublishModal()" data-i18n="nav_publier"><i class="fas fa-plus"></i> Publier</button>
+                <div id="authArea">
+                    <button class="btn-login" onclick="openLoginModal()" data-i18n="nav_connexion">Connexion</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- HERO -->
-    <section class="hero" id="accueil">
-        <div class="hero-overlay"></div>
+    <section class="hero" id="hero">
+        <div class="hero-banners" id="heroBanners"></div>
         <div class="hero-content">
-            <h1>Trouvez votre bien immobilier en Algérie</h1>
-            <p class="lead">Achat, vente, location — ImmoElite connecte propriétaires et acheteurs avec transparence</p>
-            <div class="search-box">
-                <select id="searchType"><option value="">Type</option><option value="vente">Vente</option><option value="location">Location</option></select>
-                <select id="searchWilaya"><option value="">Wilaya</option><option>Adrar</option><option>Chlef</option><option>Laghouat</option><option>Oum El Bouaghi</option><option>Batna</option><option>Béjaïa</option><option>Biskra</option><option>Béchar</option><option>Blida</option><option>Bouira</option><option>Tamanrasset</option><option>Tébessa</option><option>Tlemcen</option><option>Tiaret</option><option>Tizi Ouzou</option><option>Alger</option><option>Djelfa</option><option>Jijel</option><option>Sétif</option><option>Saïda</option><option>Skikda</option><option>Sidi Bel Abbès</option><option>Annaba</option><option>Guelma</option><option>Constantine</option><option>Médéa</option><option>Mostaganem</option><option>M’Sila</option><option>Mascara</option><option>Ouargla</option><option>Oran</option><option>El Bayadh</option><option>Illizi</option><option>Bordj Bou Arréridj</option><option>Boumerdès</option><option>El Tarf</option><option>Tindouf</option><option>Tissemsilt</option><option>El Oued</option><option>Khenchela</option><option>Souk Ahras</option><option>Tipaza</option><option>Mila</option><option>Aïn Defla</option><option>Naâma</option><option>Aïn Témouchent</option><option>Ghardaïa</option><option>Relizane</option><option>El M’Ghair</option><option>El Meniaa</option><option>Ouled Djellal</option><option>Bordj Badji Mokhtar</option><option>Béni Abbès</option><option>Timimoun</option><option>Touggourt</option><option>Djanet</option><option>In Salah</option><option>In Guezzam</option></select>
-                <select id="searchCategory"><option value="">Catégorie</option><option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Local commercial</option></select>
-                <button class="btn-gold" onclick="searchProperties()"><i class="fas fa-search"></i> Rechercher</button>
-            </div>
-            <div class="hero-stats">
-                <div><span id="statProperties">0</span><br>Annonces</div>
-                <div><span id="statUsers">0</span><br>Utilisateurs</div>
-                <div><span>58<br>Wilayas</div>
-            </div>
+            <h1 id="heroTitle" data-i18n="hero_title">Trouvez votre bien immobilier en Algérie</h1>
+            <p id="heroSubtitle" data-i18n="hero_subtitle">La première plateforme immobilière 100% algérienne — Vente, Location, Estimation</p>
+        </div>
+        <!-- Search -->
+        <div class="search-box">
+            <select id="searchType" data-i18n-placeholder="search_type">
+                <option value="" data-i18n="search_type">Vente / Location</option>
+                <option value="vente" data-i18n="type_vente">Vente</option>
+                <option value="location" data-i18n="type_location">Location</option>
+            </select>
+            <select id="searchWilaya">
+                <option value="" data-i18n="search_wilaya">Toutes wilayas</option>
+            </select>
+            <select id="searchCategory">
+                <option value="" data-i18n="search_category">Catégorie</option>
+                <option value="appartement" data-i18n="cat_appartement">Appartement</option>
+                <option value="villa" data-i18n="cat_villa">Villa</option>
+                <option value="terrain" data-i18n="cat_terrain">Terrain</option>
+                <option value="commercial" data-i18n="cat_commercial">Local commercial</option>
+                <option value="garage" data-i18n="cat_garage">Garage</option>
+                <option value="bureautique" data-i18n="cat_bureautique">Bureautique</option>
+            </select>
+            <input type="number" id="searchMin" placeholder="Prix min (DZD)" data-i18n-placeholder="search_min">
+            <input type="number" id="searchMax" placeholder="Prix max (DZD)" data-i18n-placeholder="search_max">
+            <button onclick="searchProperties()" data-i18n="search_btn"><i class="fas fa-search"></i> Rechercher</button>
         </div>
     </section>
 
-    <!-- HOW IT WORKS -->
-    <section class="section" id="comment">
+    <!-- SITE CONTENT: Notes, Offres, Conseils -->
+    <section id="siteContentBlocks" class="site-content-section" style="display:none;">
         <div class="container">
-            <h2 class="section-title">Comment ça marche ?</h2>
+            <div id="contentBlocksGrid" class="content-blocks-grid"></div>
+        </div>
+    </section>
+
+    <!-- COMMENT ÇA MARCHE (softened) -->
+    <section class="steps-section" id="stepsSection">
+        <div class="container">
+            <h2 data-i18n="steps_title">Comment ça marche ?</h2>
+            <p class="section-subtitle" data-i18n="steps_subtitle">Publiez ou trouvez votre bien en quelques étapes</p>
             <div class="steps-grid">
-                <div class="step-card"><div class="step-icon"><i class="fas fa-user-plus"></i></div><h3>1. Inscrivez-vous</h3><p>Créez votre compte gratuitement en 30 secondes</p></div>
-                <div class="step-card"><div class="step-icon"><i class="fas fa-edit"></i></div><h3>2. Publiez votre annonce</h3><p>Payez 1 000 DZ via BaridiMob et votre annonce est en ligne</p></div>
-                <div class="step-card"><div class="step-icon"><i class="fab fa-whatsapp"></i></div><h3>3. Contactez via WhatsApp</h3><p>Les intéressés vous contactent directement par WhatsApp</p></div>
-                <div class="step-card"><div class="step-icon"><i class="fas fa-handshake"></i></div><h3>4. Finalisez la transaction</h3><p>Une commission est prélevée : 2% vente / 5 000 DZ location</p></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- COMMISSIONS -->
-    <section class="section section-dark" id="commissions">
-        <div class="container">
-            <h2 class="section-title">Nos Commissions — Transparence totale</h2>
-            <div class="commissions-grid">
-                <div class="commission-card">
-                    <div class="commission-icon"><i class="fas fa-bullhorn"></i></div>
-                    <h3>Publication d'annonce</h3>
-                    <div class="commission-price">1 000 DZ</div>
-                    <p>Frais unique par annonce</p>
-                    <p class="commission-detail">Paiement via <strong>BaridiMob</strong></p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-edit"></i></div>
+                    <h3 data-i18n="step1_title">1. Publiez</h3>
+                    <p data-i18n="step1_text">Remplissez le formulaire, ajoutez vos photos et soumettez votre annonce</p>
                 </div>
-                <div class="commission-card featured">
-                    <div class="commission-badge">Vente</div>
-                    <div class="commission-icon"><i class="fas fa-percentage"></i></div>
-                    <h3>Commission sur vente</h3>
-                    <div class="commission-price">2%</div>
-                    <p>Sur le prix de vente final</p>
-                    <p class="commission-detail">Ex : Vente 15 000 000 DZ = <strong>300 000 DZ</strong></p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3 data-i18n="step2_title">2. Activez</h3>
+                    <p data-i18n="step2_text">Activez votre annonce via BaridiMob pour la rendre visible</p>
                 </div>
-                <div class="commission-card">
-                    <div class="commission-icon"><i class="fas fa-key"></i></div>
-                    <h3>Commission sur location</h3>
-                    <div class="commission-price">5 000 DZ</div>
-                    <p>Forfait par bail signé</p>
-                    <p class="commission-detail">Paiement via <strong>BaridiMob</strong></p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-handshake"></i></div>
+                    <h3 data-i18n="step3_title">3. Trouvez</h3>
+                    <p data-i18n="step3_text">Acheteurs et locataires vous contactent directement</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- VENTE SECTION -->
-    <section class="section" id="vente">
-        <div class="container">
-            <h2 class="section-title">Annonces de Vente</h2>
-            <p class="section-subtitle">Commission ImmoElite : 2% du prix de vente</p>
-            <div class="properties-grid" id="venteGrid">
-                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+            <div class="steps-cta">
+                <a href="tarifs.html" class="btn-link-gold" data-i18n="steps_view_tarifs">Voir nos tarifs →</a>
             </div>
         </div>
     </section>
 
-    <!-- LOCATION SECTION -->
-    <section class="section section-alt" id="location">
+    <!-- PROPERTIES -->
+    <section class="properties-section" id="properties">
         <div class="container">
-            <h2 class="section-title">Annonces de Location</h2>
-            <p class="section-subtitle">Commission ImmoElite : 5 000 DZ par bail signé</p>
-            <div class="properties-grid" id="locationGrid">
-                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+            <h2 data-i18n="properties_title">Annonces Immobilières</h2>
+            <p class="section-subtitle" data-i18n="properties_subtitle">Découvrez les biens disponibles</p>
+            <div class="properties-grid" id="propertiesGrid"></div>
+            <div class="load-more" id="loadMore" style="display:none;">
+                <button onclick="loadMoreProperties()" data-i18n="load_more">Voir plus d'annonces</button>
             </div>
         </div>
     </section>
 
-    <!-- ESTIMATION -->
-    <section class="section" id="estimation">
+    <!-- ESTIMATION SECTION -->
+    <section class="estimation-section" id="estimation">
         <div class="container">
-            <h2 class="section-title">Estimez votre bien</h2>
+            <h2 data-i18n="estimation_title">Estimez votre bien</h2>
+            <p class="section-subtitle" data-i18n="estimation_subtitle">Obtenez une estimation basée sur les prix du marché</p>
+            <!-- Quick estimation (existing) -->
             <div class="estimation-box">
-                <div class="est-form">
-                    <select id="estWilaya"><option value="">Wilaya</option><option>Adrar</option><option>Chlef</option><option>Laghouat</option><option>Oum El Bouaghi</option><option>Batna</option><option>Béjaïa</option><option>Biskra</option><option>Béchar</option><option>Blida</option><option>Bouira</option><option>Tamanrasset</option><option>Tébessa</option><option>Tlemcen</option><option>Tiaret</option><option>Tizi Ouzou</option><option>Alger</option><option>Djelfa</option><option>Jijel</option><option>Sétif</option><option>Saïda</option><option>Skikda</option><option>Sidi Bel Abbès</option><option>Annaba</option><option>Guelma</option><option>Constantine</option><option>Médéa</option><option>Mostaganem</option><option>M’Sila</option><option>Mascara</option><option>Ouargla</option><option>Oran</option><option>El Bayadh</option><option>Illizi</option><option>Bordj Bou Arréridj</option><option>Boumerdès</option><option>El Tarf</option><option>Tindouf</option><option>Tissemsilt</option><option>El Oued</option><option>Khenchela</option><option>Souk Ahras</option><option>Tipaza</option><option>Mila</option><option>Aïn Defla</option><option>Naâma</option><option>Aïn Témouchent</option><option>Ghardaïa</option><option>Relizane</option><option>El M’Ghair</option><option>El Meniaa</option><option>Ouled Djellal</option><option>Bordj Badji Mokhtar</option><option>Béni Abbès</option><option>Timimoun</option><option>Touggourt</option><option>Djanet</option><option>In Salah</option><option>In Guezzam</option></select>
-                    <select id="estCategory"><option value="">Type de bien</option><option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Local commercial</option></select>
+                <div class="est-form-row">
+                    <select id="estWilaya"><option value="">Wilaya</option></select>
+                    <select id="estCategory">
+                        <option value="appartement">Appartement</option>
+                        <option value="villa">Villa</option>
+                        <option value="terrain">Terrain</option>
+                        <option value="commercial">Local commercial</option>
+                        <option value="bureautique">Bureautique</option>
+                    </select>
                     <input type="number" id="estSurface" placeholder="Surface (m²)">
-                    <select id="estCondition"><option value="">État</option><option value="neuf">Neuf</option><option value="excellent">Excellent</option><option value="bon">Bon</option><option value="renover">À rénover</option><option value="mauvais">Mauvais</option></select>
-                    <input type="number" id="estAge" placeholder="Âge du bien (années)" min="0">
-                    <select id="estParking"><option value="non">Sans parking</option><option value="oui">Avec parking</option></select>
-                    <button class="btn-gold" onclick="runEstimation()"><i class="fas fa-calculator"></i> Estimer</button>
+                    <select id="estCondition">
+                        <option value="neuf">Neuf</option>
+                        <option value="bon" selected>Bon état</option>
+                        <option value="moyen">Moyen</option>
+                        <option value="a_renover">À rénover</option>
+                    </select>
                 </div>
-                <div class="est-result" id="estResult" style="display:none">
-                    <h3>Résultat de l'estimation</h3>
-                    <div class="est-total" id="estTotal"></div>
-                    <div class="est-detail" id="estDetail"></div>
+                <div class="est-form-row">
+                    <input type="number" id="estAge" placeholder="Âge (années)" value="0">
+                    <select id="estParking">
+                        <option value="non">Sans parking</option>
+                        <option value="1">1 parking</option>
+                        <option value="2">2+ parking</option>
+                    </select>
+                </div>
+                <button class="btn-estimate" onclick="quickEstimate()" data-i18n="estimation_btn"><i class="fas fa-calculator"></i> Estimer</button>
+                <div id="estResult" class="est-result" style="display:none;"></div>
+            </div>
+
+            <!-- DETAILED ESTIMATION BUTTON -->
+            <div class="estimation-detailed-cta">
+                <button class="btn-estimate-detailed" onclick="openEstimationRequestModal()" data-i18n="estimation_detailed">
+                    <i class="fas fa-file-alt"></i> Demande d'estimation détaillée
+                </button>
+                <p class="est-detail-info" data-i18n="est_detail_info">Recevez une estimation personnalisée avec réponse automatique sous 24-48h</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GESTION LOCATIVE (reworked) -->
+    <section class="gestion-section" id="gestion">
+        <div class="container">
+            <h2 data-i18n="gestion_title">Gestion Locative</h2>
+            <p class="section-subtitle" data-i18n="gestion_subtitle">Confiez-nous la gestion de vos biens locatifs</p>
+            <div class="gestion-content">
+                <div class="gestion-features">
+                    <div class="gestion-feature"><i class="fas fa-search"></i><h4>Recherche de locataires</h4><p>Publication de votre bien, filtrage des candidats, visites organisées</p></div>
+                    <div class="gestion-feature"><i class="fas fa-file-contract"></i><h4>Bail & Contrats</h4><p>Rédaction des baux, état des lieux, clauses personnalisées</p></div>
+                    <div class="gestion-feature"><i class="fas fa-money-bill-wave"></i><h4>Encaissement</h4><p>Collecte des loyers via BaridiMob, relances automatiques</p></div>
+                    <div class="gestion-feature"><i class="fas fa-tools"></i><h4>Suivi des travaux</h4><p>Gestion des interventions, suivi des réparations</p></div>
+                    <div class="gestion-feature"><i class="fas fa-chart-line"></i><h4>Rapports</h4><p>Rapports mensuels sur les revenus et dépenses</p></div>
+                    <div class="gestion-feature"><i class="fas fa-shield-alt"></i><h4>Assurance</h4><p>Protection contre les impayés de loyer</p></div>
+                </div>
+                <div class="gestion-cta">
+                    <p id="gestionText">Confiez-nous la gestion de vos biens locatifs. Nous prenons en charge la recherche de locataires, la rédaction des baux, l'encaissement des loyers et le suivi des travaux. Contactez-nous pour un devis personnalisé.</p>
+                    <a href="https://wa.me/213550000000" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Contactez-nous</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- GESTION LOCATIVE -->
-    <section class="section section-dark" id="gestion">
+    <!-- PROMOTIONS / ENTERPRISES -->
+    <section class="promos-section" id="promos">
         <div class="container">
-            <h2 class="section-title">Gestion Locative</h2>
-            <div class="features-grid">
-                <div class="feature-card"><i class="fas fa-search-dollar"></i><h3>Recherche de locataires</h3><p>Annonce, sélection et vérification des dossiers</p></div>
-                <div class="feature-card"><i class="fas fa-file-contract"></i><h3>Rédaction des baux</h3><p>Contrats conformes à la loi algérienne</p></div>
-                <div class="feature-card"><i class="fas fa-money-check-alt"></i><h3>Encaissement des loyers</h3><p>Suivi et relance automatique</p></div>
-                <div class="feature-card"><i class="fas fa-tools"></i><h3>Gestion des travaux</h3><p>Coordination et suivi des interventions</p></div>
-                <div class="feature-card"><i class="fas fa-chart-line"></i><h3>Rapports financiers</h3><p>Relevés mensuels et bilans annuels</p></div>
-                <div class="feature-card"><i class="fas fa-gavel"></i><h3>Assistance juridique</h3><p>Conseil et représentation en cas de litige</p></div>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card"><h3>Basique</h3><div class="price">5 000 DZ/mois</div><ul><li>Recherche locataires</li><li>Rédaction bail</li><li>Encaissement loyers</li></ul></div>
-                <div class="pricing-card featured"><div class="pricing-badge">Populaire</div><h3>Premium</h3><div class="price">10 000 DZ/mois</div><ul><li>Tout Basique +</li><li>Gestion travaux</li><li>Rapports financiers</li><li>Assistance juridique</li></ul></div>
-                <div class="pricing-card"><h3>Enterprise</h3><div class="price">Sur devis</div><ul><li>Tout Premium +</li><li>Multi-biens</li><li>Dédié manager</li><li>Priority support</li></ul></div>
-            </div>
+            <h2 id="promosTitle" data-i18n="promotions_title">Professionnels & Entreprises</h2>
+            <p class="section-subtitle" id="promosSubtitle" data-i18n="promotions_subtitle">Découvrez nos partenaires et programmes promotionnels</p>
+            <div class="promos-grid" id="promosGrid"></div>
         </div>
     </section>
 
     <!-- TESTIMONIALS -->
-    <section class="section" id="temoignages">
+    <section class="testimonials-section" id="testimonials">
         <div class="container">
-            <h2 class="section-title">Témoignages</h2>
+            <h2 data-i18n="testimonials_title">Ce que disent nos clients</h2>
             <div class="testimonials-grid">
-                <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>\"J'ai vendu mon appartement en 2 semaines via ImmoElite. Rapide et transparent !\"</p><div class="testimonial-author">Karim B. - Alger</div></div>
-                <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>\"La gestion locative me permet de gérer mes biens à distance sans souci.\"</p><div class="testimonial-author">Samira M. - Oran</div></div>
-                <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>\"L'estimation en ligne m'a aidé à fixer le bon prix pour ma villa.\"</p><div class="testimonial-author">Youcef D. - Constantine</div></div>
+                <div class="testimonial-card"><div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>"J'ai vendu mon appartement en 2 semaines grâce à ImmoElite. Service rapide et professionnel."</p><div class="testimonial-author"><strong>Karim B.</strong><span>Alger</span></div></div>
+                <div class="testimonial-card"><div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>"La meilleure plateforme pour trouver un terrain en Algérie. Interface simple et efficace."</p><div class="testimonial-author"><strong>Amina M.</strong><span>Oran</span></div></div>
+                <div class="testimonial-card"><div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p>"J'ai loué ma villa sans problème. Le système BaridiMob est très pratique."</p><div class="testimonial-author"><strong>Yacine D.</strong><span>Constantine</span></div></div>
             </div>
         </div>
     </section>
 
     <!-- CONTACT -->
-    <section class="section section-alt" id="contact">
+    <section class="contact-section" id="contact">
         <div class="container">
-            <h2 class="section-title">Contactez-nous</h2>
+            <h2 data-i18n="contact_title">Contactez-nous</h2>
+            <p class="section-subtitle" data-i18n="contact_subtitle">Une question ? Nous sommes là pour vous aider</p>
             <div class="contact-grid">
-                <form class="contact-form" onsubmit="sendContact(event)">
-                    <input type="text" id="contactName" placeholder="Votre nom" required>
-                    <input type="email" id="contactEmail" placeholder="Votre email" required>
+                <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+                    <input type="text" id="contactName" placeholder="Nom" required>
+                    <input type="email" id="contactEmail" placeholder="Email" required>
                     <input type="tel" id="contactPhone" placeholder="Téléphone">
-                    <select id="contactSubject"><option value="">Sujet</option><option>Publication d'annonce</option><option>Estimation</option><option>Gestion locative</option><option>Réclamation</option><option>Autre</option></select>
-                    <textarea id="contactMessage" placeholder="Votre message" rows="4" required></textarea>
-                    <button type="submit" class="btn-gold"><i class="fas fa-paper-plane"></i> Envoyer</button>
+                    <input type="text" id="contactSubject" placeholder="Sujet">
+                    <textarea id="contactMessage" placeholder="Message" required></textarea>
+                    <button type="submit" class="btn-contact" data-i18n="contact_send"><i class="fas fa-paper-plane"></i> Envoyer</button>
                 </form>
                 <div class="contact-info">
-                    <div class="info-item"><i class="fab fa-whatsapp"></i><span>+213 5 50 00 00 00</span></div>
-                    <div class="info-item"><i class="fas fa-envelope"></i><span>contact@immoelite.dz</span></div>
-                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>Alger, Algérie</span></div>
-                    <div class="info-item baridimob-info"><i class="fas fa-university"></i><span>Paiement BaridiMob<br><small>RIP : <strong id="displayRip">00799990001001234567</strong></small></span></div>
+                    <div class="contact-item"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p>+213 55 000 0000</p></div></div>
+                    <div class="contact-item"><i class="fas fa-envelope"></i><div><h4>Email</h4><p>contact@immoelite.dz</p></div></div>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><h4>Adresse</h4><p>Algérie — Disponible partout</p></div></div>
                 </div>
             </div>
         </div>
@@ -197,155 +227,241 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <div class="container footer-grid">
-            <div><h3><i class="fas fa-building"></i> Immo<span class="gold">Elite</span></h3><p>Plateforme immobilière transparente en Algérie</p></div>
-            <div><h4>Liens</h4><a href="#vente">Vente</a><a href="#location">Location</a><a href="#estimation">Estimation</a><a href="#commissions">Commissions</a></div>
-            <div><h4>Légal</h4><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a></div>
-            <div><h4>Suivez-nous</h4><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-instagram"></i></a></div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><i class="fas fa-building"></i> ImmoElite</h3>
+                    <p data-i18n="footer_about">ImmoElite — Plateforme immobilière algérienne</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liens</h4>
+                    <a href="#properties">Annonces</a>
+                    <a href="#estimation">Estimation</a>
+                    <a href="tarifs.html">Tarifs</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Suivez-nous</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p id="footerText">© 2024 ImmoElite — Tous droits réservés</p>
+            </div>
         </div>
-        <div class="footer-bottom">&copy; 2024 ImmoElite. Tous droits réservés.</div>
     </footer>
 
-    <!-- BACK TO TOP -->
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
-
-    <!-- ========= MODALS ========= -->
-
-    <!-- LOGIN MODAL -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
-            <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
-            <form onsubmit="handleLogin(event)">
-                <input type="email" id="loginEmail" placeholder="Email" required>
-                <input type="password" id="loginPassword" placeholder="Mot de passe" required>
-                <button type="submit" class="btn-gold full-width">Se connecter</button>
-            </form>
-            <p class="modal-link">Pas de compte ? <a onclick="closeModal('loginModal');openModal('registerModal')">Inscrivez-vous</a></p>
+    <!-- ========== PUBLISH MODAL (3-step) ========== -->
+<div class="modal-overlay" id="publishModal" style="display:none;">
+    <div class="modal publish-modal">
+        <div class="modal-header">
+            <h2 data-i18n="publish_title">Publier une annonce</h2>
+            <button class="modal-close" onclick="closePublishModal()"><i class="fas fa-times"></i></button>
         </div>
-    </div>
-
-    <!-- REGISTER MODAL -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
-            <h2><i class="fas fa-user-plus"></i> Inscription</h2>
-            <form onsubmit="handleRegister(event)">
-                <input type="text" id="regName" placeholder="Nom complet" required>
-                <input type="email" id="regEmail" placeholder="Email" required>
-                <input type="tel" id="regPhone" placeholder="Téléphone (05XXXXXXXX)" required>
-                <input type="password" id="regPassword" placeholder="Mot de passe (min 6 car.)" minlength="6" required>
-                <input type="password" id="regPassword2" placeholder="Confirmer le mot de passe" required>
-                <button type="submit" class="btn-gold full-width">Créer mon compte</button>
-            </form>
-            <p class="modal-link">Déjà inscrit ? <a onclick="closeModal('registerModal');openModal('loginModal')">Connectez-vous</a></p>
+        <div class="pub-steps-indicator">
+            <div class="pub-step-ind active" data-step="1">1. Info</div>
+            <div class="pub-step-ind" data-step="2">2. Détails</div>
+            <div class="pub-step-ind" data-step="3">3. Paiement</div>
         </div>
-    </div>
-
-    <!-- PUBLISH MODAL -->
-    <div class="modal-overlay" id="publishModal">
-        <div class="modal modal-large">
-            <button class="modal-close" onclick="closeModal('publishModal')">&times;</button>
-            <h2><i class="fas fa-plus-circle"></i> Publier une annonce</h2>
-            <div class="publish-steps">
-                <div class="step active" id="pubStep1">1. Informations</div>
-                <div class="step" id="pubStep2">2. Photos</div>
-                <div class="step" id="pubStep3">3. Paiement</div>
+        <!-- Step 1: Info -->
+        <div class="pub-step pub-step-1" id="pubStep1">
+            <div class="pub-form-grid">
+                <select id="pubType" onchange="updatePubPrice()">
+                    <option value="vente">Vente</option>
+                    <option value="location">Location</option>
+                </select>
+                <select id="pubCategory">
+                    <option value="appartement">Appartement</option>
+                    <option value="villa">Villa</option>
+                    <option value="terrain">Terrain</option>
+                    <option value="commercial">Local commercial</option>
+                    <option value="garage">Garage</option>
+                    <option value="bureautique">Bureautique</option>
+                </select>
+                <input type="text" id="pubTitle" placeholder="Titre de l'annonce">
+                <textarea id="pubDescription" placeholder="Description"></textarea>
+                <input type="number" id="pubPrice" placeholder="Prix (DZD)">
             </div>
-            <!-- Step 1: Info -->
-            <div class="pub-step-content" id="pubContent1">
-                <form id="pubForm">
-                    <select id="pubType" required><option value="">Vente ou Location ?</option><option value="vente">Vente</option><option value="location">Location</option></select>
-                    <select id="pubCategory" required><option value="">Catégorie</option><option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Local commercial</option><option value="garage">Garage</option></select>
-                    <input type="text" id="pubTitle" placeholder="Titre de l'annonce" required>
-                    <textarea id="pubDescription" placeholder="Description détaillée" rows="3" required></textarea>
-                    <input type="number" id="pubPrice" placeholder="Prix (DZD)" required>
-                    <select id="pubWilaya" required><option value="">Wilaya</option><option>Adrar</option><option>Chlef</option><option>Laghouat</option><option>Oum El Bouaghi</option><option>Batna</option><option>Béjaïa</option><option>Biskra</option><option>Béchar</option><option>Blida</option><option>Bouira</option><option>Tamanrasset</option><option>Tébessa</option><option>Tlemcen</option><option>Tiaret</option><option>Tizi Ouzou</option><option>Alger</option><option>Djelfa</option><option>Jijel</option><option>Sétif</option><option>Saïda</option><option>Skikda</option><option>Sidi Bel Abbès</option><option>Annaba</option><option>Guelma</option><option>Constantine</option><option>Médéa</option><option>Mostaganem</option><option>M’Sila</option><option>Mascara</option><option>Ouargla</option><option>Oran</option><option>El Bayadh</option><option>Illizi</option><option>Bordj Bou Arréridj</option><option>Boumerdès</option><option>El Tarf</option><option>Tindouf</option><option>Tissemsilt</option><option>El Oued</option><option>Khenchela</option><option>Souk Ahras</option><option>Tipaza</option><option>Mila</option><option>Aïn Defla</option><option>Naâma</option><option>Aïn Témouchent</option><option>Ghardaïa</option><option>Relizane</option><option>El M’Ghair</option><option>El Meniaa</option><option>Ouled Djellal</option><option>Bordj Badji Mokhtar</option><option>Béni Abbès</option><option>Timimoun</option><option>Touggourt</option><option>Djanet</option><option>In Salah</option><option>In Guezzam</option></select>
-                    <input type="text" id="pubCommune" placeholder="Commune">
-                    <input type="text" id="pubAddress" placeholder="Adresse">
-                    <div class="form-row">
-                        <input type="number" id="pubSurface" placeholder="Surface (m²)" required>
-                        <input type="number" id="pubRooms" placeholder="Pièces">
-                        <input type="number" id="pubBathrooms" placeholder="Salles de bain">
-                    </div>
-                    <div class="form-row">
-                        <select id="pubCondition"><option value="bon">Bon état</option><option value="neuf">Neuf</option><option value="excellent">Excellent</option><option value="renover">À rénover</option></select>
-                        <input type="number" id="pubAge" placeholder="Âge (années)" min="0" value="0">
-                        <select id="pubParking"><option value="non">Sans parking</option><option value="oui">Avec parking</option></select>
-                    </div>
-                    <div class="contact-phone-choice">
-                        <label style="color:var(--accent);font-weight:600;font-size:.95rem;margin-bottom:8px;display:block"><i class="fas fa-phone"></i> Numéro de contact affiché</label>
-                        <div class="choice-row">
-                            <label class="choice-option">
-                                <input type="radio" name="pubContactChoice" value="mine" checked>
-                                <span class="choice-box"><i class="fas fa-user"></i> Mon numéro — les acheteurs me contactent directement</span>
-                            </label>
-                            <label class="choice-option">
-                                <input type="radio" name="pubContactChoice" value="platform">
-                                <span class="choice-box"><i class="fas fa-building"></i> Numéro ImmoElite — la plateforme gère les contacts</span>
-                            </label>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-gold full-width" onclick="goToPubStep(2)">Suivant <i class="fas fa-arrow-right"></i></button>
-                </form>
+            <div id="pubCustomFields1"></div>
+            <div class="pub-nav">
+                <button class="pub-next" onclick="goToPubStep(2)" data-i18n="next">Suivant →</button>
             </div>
-            <!-- Step 2: Photos -->
-            <div class="pub-step-content" id="pubContent2" style="display:none">
-                <div class="upload-area" id="uploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Glissez vos photos ici ou cliquez pour sélectionner</p>
-                    <p class="upload-hint">Jusqu'à 5 photos, max 5 Mo chacune</p>
-                    <input type="file" id="pubImages" accept="image/*" multiple style="display:none" onchange="previewImages(this)">
+        </div>
+        <!-- Step 2: Details -->
+        <div class="pub-step pub-step-2" id="pubStep2" style="display:none;">
+            <div class="pub-form-grid">
+                <select id="pubWilaya"><option value="">Wilaya</option></select>
+                <input type="text" id="pubCommune" placeholder="Commune">
+                <input type="text" id="pubAddress" placeholder="Adresse">
+                <input type="number" id="pubSurface" placeholder="Surface (m²)">
+                <input type="number" id="pubRooms" placeholder="Pièces">
+                <input type="number" id="pubBathrooms" placeholder="Salles de bain">
+                <select id="pubParking">
+                    <option value="non">Sans parking</option>
+                    <option value="1">1 parking</option>
+                    <option value="2">2+ parking</option>
+                </select>
+                <select id="pubCondition">
+                    <option value="neuf">Neuf</option>
+                    <option value="bon" selected>Bon état</option>
+                    <option value="moyen">Moyen</option>
+                    <option value="a_renover">À rénover</option>
+                </select>
+                <input type="number" id="pubAge" placeholder="Âge (années)" value="0">
+            </div>
+            <div class="pub-map-picker">
+                <label><i class="fas fa-map-marker-alt"></i> Position sur la carte (optionnel)</label>
+                <div id="pubMapContainer">
+                    <iframe id="pubMapFrame" width="100%" height="200" frameborder="0" style="border:0; border-radius:10px;" src="https://maps.google.com/maps?q=Algeria&t=&z=5&ie=UTF8&iwloc=&output=embed" allowfullscreen></iframe>
                 </div>
-                <div class="preview-grid" id="previewGrid"></div>
-                <div class="form-actions">
-                    <button class="btn-outline" onclick="goToPubStep(1)"><i class="fas fa-arrow-left"></i> Retour</button>
-                    <button class="btn-gold" onclick="goToPubStep(3)">Suivant <i class="fas fa-arrow-right"></i></button>
+                <div class="pub-map-coords">
+                    <input type="text" id="pubLat" placeholder="Latitude" readonly>
+                    <input type="text" id="pubLng" placeholder="Longitude" readonly>
                 </div>
             </div>
-            <!-- Step 3: Payment -->
-            <div class="pub-step-content" id="pubContent3" style="display:none">
-                <div class="payment-summary">
-                    <h3>Récapitulatif</h3>
-                    <div id="paymentSummaryContent"></div>
-                    <div class="payment-total">
-                        <span>Frais de publication :</span>
-                        <strong>1 000 DZ</strong>
+            <div class="pub-photos">
+                <label><i class="fas fa-camera"></i> Photos (max 5)</label>
+                <input type="file" id="pubPhotos" multiple accept="image/*" onchange="previewPhotos(event)">
+                <div class="pub-photos-preview" id="pubPhotosPreview"></div>
+            </div>
+            <div id="pubCustomFields2"></div>
+            <div class="pub-contact-row">
+                <select id="pubContactType">
+                    <option value="mine">Mon numéro</option>
+                    <option value="platform">Via la plateforme</option>
+                    <option value="custom">Autre numéro</option>
+                </select>
+                <input type="tel" id="pubCustomPhone" placeholder="Numéro de téléphone" style="display:none;">
+            </div>
+            <div class="pub-nav">
+                <button class="pub-prev" onclick="goToPubStep(1)">← Précédent</button>
+                <button class="pub-next" onclick="goToPubStep(3)">Suivant →</button>
+            </div>
+        </div>
+        <!-- Step 3: Payment -->
+        <div class="pub-step pub-step-3" id="pubStep3" style="display:none;">
+            <div class="pub-payment-info">
+                <div class="pub-amount">
+                    <span>Frais de publication</span>
+                    <strong id="pubAmount">1 000 DZ</strong>
+                </div>
+                <div class="pub-baridi">
+                    <h4><i class="fas fa-mobile-alt"></i> Paiement via BaridiMob</h4>
+                    <p>Envoyez le montant au RIP ci-dessous</p>
+                    <div class="pub-rip-box">
+                        <span id="pubRip">00799990001001234567</span>
+                        <button onclick="copyRip()" title="Copier"><i class="fas fa-copy"></i></button>
                     </div>
+                    <p class="pub-rip-note">Mentionnez votre email en référence</p>
                 </div>
-                <div class="baridimob-box">
-                    <h3><i class="fas fa-university"></i> Paiement via BaridiMob</h3>
-                    <ol>
-                        <li>Ouvrez l'application <strong>BaridiMob</strong></li>
-                        <li>Allez dans <strong>Transfert</strong></li>
-                        <li>Envoyez <strong>1 000 DZ</strong> au RIP :</li>
-                    </ol>
-                    <div class="rip-display" id="publishRip">00799990001001234567</div>
-                    <p class="rip-hint">Copiez ce RIP et collez-le dans BaridiMob</p>
-                    <button class="btn-outline" onclick="copyRip()"><i class="fas fa-copy"></i> Copier le RIP</button>
+                <div class="pub-form-row">
+                    <input type="text" id="pubClientRip" placeholder="Votre RIP BaridiMob (optionnel)">
                 </div>
-                <div class="payment-proof">
-                    <label>Numéro de référence du paiement (optionnel)</label>
-                    <input type="text" id="pubPaymentRef" placeholder="Ex : REF123456">
+                <div class="pub-confirmation">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="pubConfirmed" required>
+                        <span>J'ai effectué le paiement via BaridiMob</span>
+                    </label>
                 </div>
-                <div class="form-actions">
-                    <button class="btn-outline" onclick="goToPubStep(2)"><i class="fas fa-arrow-left"></i> Retour</button>
-                    <button class="btn-gold" onclick="submitProperty()"><i class="fas fa-check"></i> Publier l'annonce</button>
-                </div>
+            </div>
+            <div class="pub-nav">
+                <button class="pub-prev" onclick="goToPubStep(2)">← Précédent</button>
+                <button class="pub-submit" onclick="submitProperty()"><i class="fas fa-check"></i> Publier l'annonce</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- PROPERTY DETAIL MODAL -->
-    <div class="modal-overlay" id="propertyDetailModal">
-        <div class="modal modal-large">
-            <button class="modal-close" onclick="closeModal('propertyDetailModal')">&times;</button>
-            <div id="propertyDetailContent"></div>
+<!-- ========== LOGIN MODAL ========== -->
+<div class="modal-overlay" id="loginModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Connexion</h2>
+            <button class="modal-close" onclick="closeLoginModal()"><i class="fas fa-times"></i></button>
         </div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">Connexion</button>
+            <button class="auth-tab" onclick="switchAuthTab('register')">Inscription</button>
+        </div>
+        <form id="loginForm" onsubmit="login(event)">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+            <button type="submit" class="btn-auth">Se connecter</button>
+        </form>
+        <form id="registerForm" style="display:none;" onsubmit="register(event)">
+            <input type="text" id="regName" placeholder="Nom complet" required>
+            <input type="email" id="regEmail" placeholder="Email" required>
+            <input type="tel" id="regPhone" placeholder="Téléphone" required>
+            <input type="password" id="regPassword" placeholder="Mot de passe" required minlength="6">
+            <button type="submit" class="btn-auth">S'inscrire</button>
+        </form>
     </div>
+</div>
 
-    <!-- TOAST NOTIFICATION -->
-    <div class="toast" id="toast"><span id="toastMsg"></span></div>
+<!-- ========== DETAILED ESTIMATION REQUEST MODAL ========== -->
+<div class="modal-overlay" id="estimationRequestModal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-file-alt"></i> Demande d'estimation détaillée</h2>
+            <button class="modal-close" onclick="closeEstimationRequestModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="estReqForm" onsubmit="submitEstimationRequest(event)">
+            <div class="est-req-grid">
+                <input type="text" id="estReqName" placeholder="Nom complet *" required>
+                <input type="email" id="estReqEmail" placeholder="Email *" required>
+                <input type="tel" id="estReqPhone" placeholder="Téléphone">
+                <input type="tel" id="estReqWhatsapp" placeholder="WhatsApp">
+                <select id="estReqWilaya" required><option value="">Wilaya *</option></select>
+                <input type="text" id="estReqCommune" placeholder="Commune">
+                <select id="estReqCategory" required>
+                    <option value="">Catégorie *</option>
+                    <option value="appartement">Appartement</option>
+                    <option value="villa">Villa</option>
+                    <option value="terrain">Terrain</option>
+                    <option value="commercial">Local commercial</option>
+                    <option value="bureautique">Bureautique</option>
+                </select>
+                <select id="estReqType">
+                    <option value="vente">Vente</option>
+                    <option value="location">Location</option>
+                </select>
+                <input type="number" id="estReqSurface" placeholder="Surface (m²) *" required>
+                <input type="number" id="estReqRooms" placeholder="Pièces">
+                <input type="number" id="estReqBathrooms" placeholder="Salles de bain">
+                <select id="estReqParking">
+                    <option value="non">Sans parking</option>
+                    <option value="1">1 parking</option>
+                    <option value="2">2+ parking</option>
+                </select>
+                <select id="estReqCondition">
+                    <option value="neuf">Neuf</option>
+                    <option value="bon" selected>Bon état</option>
+                    <option value="moyen">Moyen</option>
+                    <option value="a_renover">À rénover</option>
+                </select>
+                <input type="number" id="estReqAge" placeholder="Âge (années)" value="0">
+            </div>
+            <textarea id="estReqDescription" placeholder="Description additionnelle (facultatif)" rows="3"></textarea>
+            <button type="submit" class="btn-estimate-detailed-submit"><i class="fas fa-paper-plane"></i> Envoyer la demande</button>
+        </form>
+        <div id="estReqResult" style="display:none; margin-top:15px; padding:15px; background:rgba(37,211,102,0.1); border-radius:10px; border-left:4px solid #25D366;"></div>
+    </div>
+</div>
+
+<!-- ========== PROPERTY DETAIL MODAL ========== -->
+<div class="modal-overlay" id="propertyModal" style="display:none;">
+    <div class="modal property-detail-modal">
+        <div class="modal-header">
+            <h2 id="propDetailTitle">Détails</h2>
+            <button class="modal-close" onclick="closePropertyModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="propertyDetailContent"></div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>

@@ -3,8 +3,8 @@ const db = require('./db');
 function createPayment(data) {
     return new Promise((resolve, reject) => {
         db.run(
-            'INSERT INTO payments (user_id, property_id, amount, type, status, reference, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [data.user_id, data.property_id, data.amount, data.type, data.status || 'pending', data.reference, data.notes],
+            'INSERT INTO payments (user_id, property_id, amount, type, status, reference, client_rip, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [data.user_id, data.property_id, data.amount, data.type, data.status || 'pending', data.reference, data.client_rip || null, data.notes],
             function(err) {
                 if (err) reject(err);
                 else resolve(this.lastID);

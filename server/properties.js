@@ -3,10 +3,11 @@ const db = require('./db');
 function createProperty(data) {
     return new Promise((resolve, reject) => {
         db.run(
-            `INSERT INTO properties (user_id, type, category, title, description, price, wilaya, commune, address, surface, rooms, bathrooms, parking, condition, age, images, contact_phone, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO properties (user_id, type, category, title, description, price, wilaya, commune, address, lat, lng, surface, rooms, bathrooms, parking, condition, age, images, contact_phone, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [data.user_id, data.type, data.category, data.title, data.description, data.price,
-             data.wilaya, data.commune, data.address, data.surface, data.rooms, data.bathrooms,
+             data.wilaya, data.commune, data.address, data.lat || null, data.lng || null,
+             data.surface, data.rooms, data.bathrooms,
              data.parking, data.condition, data.age, JSON.stringify(data.images || []), data.contact_phone || null, 'pending'],
             function(err) {
                 if (err) reject(err);
@@ -61,15 +62,17 @@ function updateProperty(id, data, userId, role) {
     return new Promise((resolve, reject) => {
         let query, params;
         if (role === 'admin') {
-            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=?, contact_phone=?, status=?, featured=? WHERE id=?`;
+            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, lat=?, lng=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=?, contact_phone=?, status=?, featured=? WHERE id=?`;
             params = [data.type, data.category, data.title, data.description, data.price,
-                      data.wilaya, data.commune, data.address, data.surface, data.rooms, data.bathrooms,
+                      data.wilaya, data.commune, data.address, data.lat || null, data.lng || null,
+                      data.surface, data.rooms, data.bathrooms,
                       data.parking, data.condition, data.age, JSON.stringify(data.images || []),
                       data.contact_phone || null, data.status || 'active', data.featured ? 1 : 0, id];
         } else {
-            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=? WHERE id=? AND user_id=?`;
+            query = `UPDATE properties SET type=?, category=?, title=?, description=?, price=?, wilaya=?, commune=?, address=?, lat=?, lng=?, surface=?, rooms=?, bathrooms=?, parking=?, condition=?, age=?, images=? WHERE id=? AND user_id=?`;
             params = [data.type, data.category, data.title, data.description, data.price,
-                      data.wilaya, data.commune, data.address, data.surface, data.rooms, data.bathrooms,
+                      data.wilaya, data.commune, data.address, data.lat || null, data.lng || null,
+                      data.surface, data.rooms, data.bathrooms,
                       data.parking, data.condition, data.age, JSON.stringify(data.images || []), id, userId];
         }
         db.run(query, params, function(err) {

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifs — ImmoElite</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .tarifs-hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 80px 20px; text-align: center; color: #fff; }
+        .tarifs-hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: #d4a254; }
+        .tarifs-hero p { font-size: 1.1rem; opacity: 0.8; }
+        .tarifs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        .tarif-card { background: #fff; border-radius: 16px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+        .tarif-card:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(0,0,0,0.12); }
+        .tarif-card.featured { border: 2px solid #d4a254; }
+        .tarif-card.featured::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #d4a254, #e94560); }
+        .tarif-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.8rem; }
+        .tarif-icon.pub { background: rgba(26,26,46,0.1); color: #1a1a2e; }
+        .tarif-icon.vente { background: rgba(233,69,96,0.1); color: #e94560; }
+        .tarif-icon.location { background: rgba(37,211,102,0.1); color: #25D366; }
+        .tarif-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: #1a1a2e; }
+        .tarif-price { font-size: 2.5rem; font-weight: 700; color: #d4a254; margin: 15px 0; }
+        .tarif-price span { font-size: 1rem; font-weight: 400; color: #666; }
+        .tarif-card p { color: #666; line-height: 1.6; margin-bottom: 20px; }
+        .tarif-card ul { list-style: none; padding: 0; margin: 20px 0; }
+        .tarif-card ul li { padding: 8px 0; color: #555; border-bottom: 1px solid #f0f0f0; }
+        .tarif-card ul li i { margin-right: 8px; color: #d4a254; }
+        .tarif-btn { display: inline-block; padding: 12px 30px; border-radius: 30px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+        .tarif-btn.primary { background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff; }
+        .tarif-btn.primary:hover { background: linear-gradient(135deg, #d4a254, #e94560); }
+        .tarif-btn.green { background: #25D366; color: #fff; }
+        .tarif-btn.green:hover { background: #1da851; }
+        .tarif-faq { max-width: 800px; margin: 40px auto; padding: 20px; }
+        .faq-item { background: #fff; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .faq-q { padding: 20px; cursor: pointer; font-weight: 600; color: #1a1a2e; display: flex; justify-content: space-between; align-items: center; }
+        .faq-q i { transition: transform 0.3s; color: #d4a254; }
+        .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s; color: #555; line-height: 1.7; }
+        .faq-item.open .faq-a { padding: 0 20px 20px; max-height: 300px; }
+        .faq-item.open .faq-q i { transform: rotate(180deg); }
+        .tarifs-note { text-align: center; padding: 40px 20px; color: #888; font-size: 0.9rem; }
+        .baridimob-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0066CC, #004C99); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-building"></i> ImmoElite</a>
+            <div class="nav-links">
+                <a href="index.html" data-i18n="nav_annonces">Annonces</a>
+                <a href="index.html#estimation" data-i18n="nav_estimation">Estimation</a>
+                <a href="index.html#promos" data-i18n="nav_pros">Pros</a>
+                <a href="index.html#contact" data-i18n="nav_contact">Contact</a>
+                <a href="tarifs.html" class="nav-link-tarifs" style="color:#d4a254; font-weight:600;" data-i18n="commissions_title">Nos Tarifs</a>
+            </div>
+            <div class="nav-right">
+                <div class="lang-selector" id="langSelector">
+                    <button class="lang-btn active" data-lang="fr">FR</button>
+                    <button class="lang-btn" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <a href="index.html" class="btn-publish" data-i18n="nav_connexion">Connexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="tarifs-hero">
+        <h1 data-i18n="commissions_title">Nos Tarifs</h1>
+        <p data-i18n="commissions_subtitle">Transparence totale sur nos prix</p>
+    </section>
+
+    <section class="tarifs-grid">
+        <div class="tarif-card">
+            <div class="tarif-icon pub"><i class="fas fa-bullhorn"></i></div>
+            <h3 data-i18n="comm_pub">Publication</h3>
+            <div class="tarif-price" id="tarifPublication">1 000 <span>DZ</span></div>
+            <p data-i18n="comm_pub_text">Frais de publication par annonce</p>
+            <ul>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_pub_1">Annonce visible 30 jours</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_pub_2">Jusqu'à 5 photos</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_pub_3">Géolocalisation sur carte</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_pub_4">Contact direct via WhatsApp</span></li>
+            </ul>
+            <div class="baridimob-badge"><i class="fas fa-mobile-alt"></i> BaridiMob</div>
+            <a href="index.html" class="tarif-btn primary" data-i18n="nav_publier">Publier</a>
+        </div>
+
+        <div class="tarif-card featured">
+            <div class="tarif-icon vente"><i class="fas fa-handshake"></i></div>
+            <h3 data-i18n="comm_vente">Vente</h3>
+            <div class="tarif-price" id="tarifVente">2<span>%</span></div>
+            <p data-i18n="comm_vente_text">Commission sur vente réussie</p>
+            <ul>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_vente_1">Paiement uniquement si vente conclue</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_vente_2">Accompagnement jusqu'à la signature</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_vente_3">Mise en avant de votre annonce</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_vente_4">Support dédié</span></li>
+            </ul>
+            <a href="https://wa.me/213550000000" class="tarif-btn green" target="_blank"><i class="fab fa-whatsapp"></i> <span data-i18n="btn_whatsapp">WhatsApp</span></a>
+        </div>
+
+        <div class="tarif-card">
+            <div class="tarif-icon location"><i class="fas fa-key"></i></div>
+            <h3 data-i18n="comm_location">Location</h3>
+            <div class="tarif-price" id="tarifLocation">5 000 <span>DZ</span></div>
+            <p data-i18n="comm_location_text">Commission fixe sur location</p>
+            <ul>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_loc_1">Montant fixe quelle que soit la valeur</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_loc_2">Vérification du locataire</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_loc_3">Rédaction du bail</span></li>
+                <li><i class="fas fa-check"></i> <span data-i18n="tarif_loc_4">Suivi des paiements</span></li>
+            </ul>
+            <a href="https://wa.me/213550000000" class="tarif-btn green" target="_blank"><i class="fab fa-whatsapp"></i> <span data-i18n="btn_whatsapp">WhatsApp</span></a>
+        </div>
+    </section>
+
+    <section class="tarif-faq">
+        <h2 style="text-align:center; margin-bottom:30px; color:#1a1a2e;">Questions fréquentes</h2>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Comment payer les frais de publication ? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Les frais de publication se paient via BaridiMob, le service de paiement mobile de la Poste Algérienne. Vous recevrez les instructions de paiement après avoir soumis votre annonce.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quand paie-t-on la commission de vente ? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">La commission de 2% n'est due qu'après la conclusion de la vente. Pas de vente, pas de commission.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">La commission de location est-elle annuelle ? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Non, les 5 000 DZ sont un montant unique à la signature du bail de location.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Puis-je publier gratuitement ? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Les frais de publication de 1 000 DZ sont obligatoires pour toutes les annonces. Cela permet de garantir la qualité des annonces et de lutter contre les annonces frauduleuses.</div>
+        </div>
+    </section>
+
+    <div class="tarifs-note">
+        <p>Tous les paiements se font via BaridiMob — le service de paiement mobile de la Poste Algérienne</p>
+    </div>
+
+    <footer class="footer" style="background:#1a1a2e; color:#fff; padding:40px 20px; text-align:center;">
+        <p style="opacity:0.7;" data-i18n="footer_about">ImmoElite — Plateforme immobilière algérienne</p>
+    </footer>
+
+    <script>
+        // Load settings for dynamic prices
+        fetch('/api/settings').then(r => r.json()).then(s => {
+            if (s.frais_publication) document.getElementById('tarifPublication').innerHTML = parseInt(s.frais_publication).toLocaleString('fr') + ' <span>DZ</span>';
+            if (s.commission_vente) document.getElementById('tarifVente').innerHTML = s.commission_vente + '<span>%</span>';
+            if (s.commission_location) document.getElementById('tarifLocation').innerHTML = parseInt(s.commission_location).toLocaleString('fr') + ' <span>DZ</span>';
+        });
+
+        // Language system
+        const savedLang = localStorage.getItem('immoelite_lang') || 'fr';
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === savedLang);
+            btn.addEventListener('click', () => {
+                localStorage.setItem('immoelite_lang', btn.dataset.lang);
+                loadLanguage(btn.dataset.lang);
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === btn.dataset.lang));
+            });
+        });
+        loadLanguage(savedLang);
+
+        function loadLanguage(lang) {
+            fetch('/api/i18n/' + lang).then(r => r.json()).then(t => {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (t[key]) el.textContent = t[key];
+                });
+                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = lang;
+            });
+        }
+    </script>
+</body>
+</html>

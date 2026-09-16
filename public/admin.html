@@ -3,231 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImmoElite - Administration</title>
+    <title>ImmoElite - Centre de Commande Admin</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="admin-body">
+    <div class="admin-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="admin-layout">
-        <aside class="admin-sidebar">
-            <a href="/" class="logo"><i class="fas fa-building"></i> Immo<span class="gold">Elite</span></a>
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-logo"><i class="fas fa-building"></i> Immo<span>Elite</span></a>
+                <div class="sidebar-role"><i class="fas fa-shield-alt"></i> Administrateur</div>
+            </div>
             <nav class="admin-nav">
-                <a href="#dashboard" class="active" onclick="showAdminTab('dashboard')"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a>
-                <a href="#properties" onclick="showAdminTab('properties')"><i class="fas fa-home"></i> Annonces</a>
-                <a href="#payments" onclick="showAdminTab('payments')"><i class="fas fa-credit-card"></i> Paiements</a>
-                <a href="#users" onclick="showAdminTab('users')"><i class="fas fa-users"></i> Utilisateurs</a>
-                <a href="#contacts" onclick="showAdminTab('contacts')"><i class="fas fa-envelope"></i> Messages</a>
-                <a href="#settings" onclick="showAdminTab('settings')"><i class="fas fa-cog"></i> Paramètres</a>
-                <a href="/" style="margin-top:24px"><i class="fas fa-arrow-left"></i> Retour au site</a>
+                <div class="nav-group"><div class="nav-group-title">Principal</div>
+                    <a href="#" onclick="showTab('dashboard');return false" class="nav-item active" id="navDashboard"><i class="fas fa-tachometer-alt"></i><span>Tableau de bord</span></a>
+                    <a href="#" onclick="showTab('properties');return false" class="nav-item" id="navProperties"><i class="fas fa-home"></i><span>Annonces</span><span class="nav-badge" id="badgeProps">0</span></a>
+                    <a href="#" onclick="showTab('payments');return false" class="nav-item" id="navPayments"><i class="fas fa-credit-card"></i><span>Paiements</span><span class="nav-badge nav-badge-pending" id="badgePayments">0</span></a>
+                    <a href="#" onclick="showTab('estimations');return false" class="nav-item" id="navEstimations"><i class="fas fa-calculator"></i><span>Estimations</span></a>
+                </div>
+                <div class="nav-group"><div class="nav-group-title">Gestion</div>
+                    <a href="#" onclick="showTab('users');return false" class="nav-item" id="navUsers"><i class="fas fa-users"></i><span>Utilisateurs</span></a>
+                    <a href="#" onclick="showTab('admins');return false" class="nav-item" id="navAdmins"><i class="fas fa-user-shield"></i><span>Admins</span></a>
+                    <a href="#" onclick="showTab('contacts');return false" class="nav-item" id="navContacts"><i class="fas fa-envelope"></i><span>Messages</span><span class="nav-badge" id="badgeContacts">0</span></a>
+                </div>
+                <div class="nav-group"><div class="nav-group-title">Marketing</div>
+                    <a href="#" onclick="showTab('promotions');return false" class="nav-item" id="navPromotions"><i class="fas fa-briefcase"></i><span>Promotions</span></a>
+                    <a href="#" onclick="showTab('banners');return false" class="nav-item" id="navBanners"><i class="fas fa-ad"></i><span>Bannières</span></a>
+                </div>
+                <div class="nav-group"><div class="nav-group-title">Configuration</div>
+                    <a href="#" onclick="showTab('formfields');return false" class="nav-item" id="navFormFields"><i class="fas fa-wpforms"></i><span>Champs formulaire</span></a>
+                    <a href="#" onclick="showTab('content');return false" class="nav-item" id="navContent"><i class="fas fa-newspaper"></i><span>Blocs contenu</span></a>
+                    <a href="#" onclick="showTab('settings');return false" class="nav-item" id="navSettings"><i class="fas fa-cog"></i><span>Parametres</span></a>
+                </div>
+                <div class="nav-footer">
+                    <a href="/" class="nav-item nav-exit"><i class="fas fa-external-link-alt"></i><span>Voir le site</span></a>
+                </div>
             </nav>
         </aside>
         <main class="admin-main">
-            <!-- DASHBOARD TAB -->
-            <div class="admin-tab" id="tab-dashboard">
-                <div class="admin-header"><h1><i class="fas fa-tachometer-alt"></i> Tableau de bord</h1></div>
-                <div class="stat-cards" id="adminStats">
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-home"></i></div><div class="stat-value" id="sTotalProps">0</div><div class="stat-label">Annonces totales</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value" id="sActiveProps">0</div><div class="stat-label">Annonces actives</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value" id="sPendingProps">0</div><div class="stat-label">En attente</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="sTotalUsers">0</div><div class="stat-label">Utilisateurs</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value" id="sRevenue">0 DZ</div><div class="stat-label">Revenu total</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-value" id="sCommVente">0 DZ</div><div class="stat-label">Commissions vente</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-key"></i></div><div class="stat-value" id="sCommLoc">0 DZ</div><div class="stat-label">Commissions location</div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-value" id="sTotalViews">0</div><div class="stat-label">Vues totales</div></div>
+            <div class="admin-header">
+                <button class="admin-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="admin-header-left">
+                    <h1 id="pageTitle"><i class="fas fa-tachometer-alt"></i> Tableau de bord</h1>
+                    <div class="admin-breadcrumb" id="breadcrumb">Accueil / Tableau de bord</div>
+                </div>
+                <div class="admin-header-right">
+                    <button class="btn-header" onclick="refreshAllData()" title="Rafraichir"><i class="fas fa-sync-alt"></i></button>
+                    <a href="/" class="btn-header" title="Voir le site"><i class="fas fa-globe"></i></a>
+                    <button class="btn-header btn-header-logout" onclick="logout()" title="Deconnexion"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
 
-            <!-- PROPERTIES TAB -->
-            <div class="admin-tab" id="tab-properties" style="display:none">
-                <div class="admin-header">
-                    <h1><i class="fas fa-home"></i> Toutes les Annonces</h1>
-                    <div>
-                        <button class="btn-gold-sm" onclick="openAddPropertyModal()" style="margin-right:8px"><i class="fas fa-plus"></i> Nouvelle annonce</button>
-                        <select id="filterPropStatus" onchange="loadAdminProperties()" style="padding:6px 12px;border-radius:6px;border:1px solid #333;background:var(--card);color:#fff">
-                            <option value="">Tous les statuts</option>
-                            <option value="pending">En attente</option>
-                            <option value="active">Actives</option>
-                            <option value="sold">Vendues</option>
-                            <option value="rented">Louées</option>
-                            <option value="expired">Expirées</option>
-                            <option value="rejected">Rejetées</option>
-                        </select>
-                        <button class="btn-gold-sm" onclick="loadAdminProperties()"><i class="fas fa-sync-alt"></i> Actualiser</button>
-                    </div>
+            <!-- DASHBOARD -->
+            <div class="tab-content" id="tabDashboard">
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="openPropModal();showTab('properties')"><i class="fas fa-plus-circle"></i> Nouvelle annonce</button>
+                    <button class="quick-btn" onclick="openPromoModal();showTab('promotions')"><i class="fas fa-briefcase"></i> Ajouter promotion</button>
+                    <button class="quick-btn" onclick="openBannerModal();showTab('banners')"><i class="fas fa-ad"></i> Ajouter banniere</button>
+                    <button class="quick-btn" onclick="showTab('settings')"><i class="fas fa-palette"></i> Personnaliser le site</button>
                 </div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead><tr><th>ID</th><th>Titre</th><th>Type</th><th>Prix</th><th>Wilaya</th><th>Propriétaire</th><th>Tél. contact</th><th>Vues</th><th>Statut</th><th>Vedette</th><th>Actions</th></tr></thead>
-                        <tbody id="adminPropsBody"><tr><td colspan="11" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
-                    </table>
+                <div class="stat-grid" id="statCards">
+                    <div class="stat-card stat-blue"><div class="stat-icon"><i class="fas fa-home"></i></div><div class="stat-value">--</div><div class="stat-label">Annonces</div><div class="stat-sub" id="statPropsSub"></div></div>
+                    <div class="stat-card stat-purple"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">--</div><div class="stat-label">Utilisateurs</div></div>
+                    <div class="stat-card stat-gold"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value">--</div><div class="stat-label">Revenus</div></div>
+                    <div class="stat-card stat-green"><div class="stat-icon"><i class="fas fa-credit-card"></i></div><div class="stat-value">--</div><div class="stat-label">Paiements</div><div class="stat-sub" id="statPaySub"></div></div>
+                    <div class="stat-card stat-orange"><div class="stat-icon"><i class="fas fa-briefcase"></i></div><div class="stat-value">--</div><div class="stat-label">Promotions</div></div>
+                    <div class="stat-card stat-pink"><div class="stat-icon"><i class="fas fa-calculator"></i></div><div class="stat-value">--</div><div class="stat-label">Estimations</div></div>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header"><i class="fas fa-clock"></i> Paiements recents</div>
+                        <div class="card-body"><table class="admin-table mini"><thead><tr><th>Date</th><th>Utilisateur</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead><tbody id="recentPaymentsBody"><tr><td colspan="5" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header"><i class="fas fa-bolt"></i> Annonces recentes</div>
+                        <div class="card-body" id="recentPropsBody"><div class="admin-empty"><i class="fas fa-spinner fa-spin"></i> Chargement...</div></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- EDIT PROPERTY MODAL -->
-            <div id="editPropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto">
-                <div style="max-width:700px;margin:40px auto;background:var(--card);border-radius:16px;padding:32px;position:relative">
-                    <button onclick="closeEditModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#fff;font-size:24px;cursor:pointer"><i class="fas fa-times"></i></button>
-                    <h2 style="margin-bottom:24px;color:var(--accent)"><i class="fas fa-edit"></i> Modifier l'annonce</h2>
-                    <input type="hidden" id="editPropId">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div><label style="color:#aaa;font-size:13px">Titre</label><input type="text" id="editTitle" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Prix (DZ)</label><input type="number" id="editPrice" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Type</label>
-                            <select id="editType" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="vente">Vente</option><option value="location">Location</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">Catégorie</label>
-                            <select id="editCategory" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Commercial</option><option value="garage">Garage</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">Wilaya</label>
-                            <select id="editWilaya" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="">Wilaya</option><option>Adrar</option><option>Chlef</option><option>Laghouat</option><option>Oum El Bouaghi</option><option>Batna</option><option>Béjaïa</option><option>Biskra</option><option>Béchar</option><option>Blida</option><option>Bouira</option><option>Tamanrasset</option><option>Tébessa</option><option>Tlemcen</option><option>Tiaret</option><option>Tizi Ouzou</option><option>Alger</option><option>Djelfa</option><option>Jijel</option><option>Sétif</option><option>Saïda</option><option>Skikda</option><option>Sidi Bel Abbès</option><option>Annaba</option><option>Guelma</option><option>Constantine</option><option>Médéa</option><option>Mostaganem</option><option>M'Sila</option><option>Mascara</option><option>Ouargla</option><option>Oran</option><option>El Bayadh</option><option>Illizi</option><option>Bordj Bou Arréridj</option><option>Boumerdès</option><option>El Tarf</option><option>Tindouf</option><option>Tissemsilt</option><option>El Oued</option><option>Khenchela</option><option>Souk Ahras</option><option>Tipaza</option><option>Mila</option><option>Aïn Defla</option><option>Naâma</option><option>Aïn Témouchent</option><option>Ghardaïa</option><option>Relizane</option><option>El M'Ghair</option><option>El Meniaa</option><option>Ouled Djellal</option><option>Bordj Badji Mokhtar</option><option>Béni Abbès</option><option>Timimoun</option><option>Touggourt</option><option>Djanet</option><option>In Salah</option><option>In Guezzam</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">Commune</label><input type="text" id="editCommune" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Adresse</label><input type="text" id="editAddress" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Surface (m²)</label><input type="number" id="editSurface" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Pièces</label><input type="number" id="editRooms" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Salles de bain</label><input type="number" id="editBathrooms" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Parking</label>
-                            <select id="editParking" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="oui">Oui</option><option value="non">Non</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">État</label>
-                            <select id="editCondition" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="neuf">Neuf</option><option value="bon">Bon</option><option value="à rénover">À rénover</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">Âge (ans)</label><input type="number" id="editAge" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Téléphone propriétaire</label><input type="text" id="editOwnerPhone" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
+            <!-- PROPERTIES -->
+            <div class="tab-content" id="tabProperties" style="display:none">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box-admin"><i class="fas fa-search"></i><input type="text" id="propSearch" placeholder="Rechercher..." oninput="filterAdminProps()"></div>
+                        <select id="propFilterStatus" onchange="filterAdminProps()" class="toolbar-select"><option value="">Tous statuts</option><option value="active">Active</option><option value="pending">En attente</option><option value="sold">Vendu</option><option value="rented">Loue</option><option value="expired">Expire</option></select>
                     </div>
-                    <div style="margin-top:16px"><label style="color:#aaa;font-size:13px">Description</label><textarea id="editDescription" rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;resize:vertical"></textarea></div>
-                    <div style="margin-top:12px;padding:12px;background:rgba(212,162,84,.06);border:1px solid rgba(212,162,84,.15);border-radius:8px">
-                        <label style="color:var(--accent);font-size:13px;font-weight:600"><i class="fas fa-phone"></i> Numéro de contact affiché (WhatsApp)</label>
-                        <div style="display:flex;gap:8px;margin-top:8px">
-                            <input type="text" id="editContactPhone" style="flex:1;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff" placeholder="Si vide = téléphone du propriétaire">
-                            <button type="button" onclick="document.getElementById('editContactPhone').value='platform';loadPlatformPhone()" class="btn-sm btn-edit" style="white-space:nowrap" title="Utiliser le numéro de la plateforme"><i class="fas fa-building"></i> Numéro plateforme</button>
-                        </div>
-                        <small style="color:#888">Laissez vide pour utiliser le téléphone du propriétaire</small>
-                    </div>
-                    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div><label style="color:#aaa;font-size:13px">Statut</label>
-                            <select id="editStatus" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="pending">En attente</option><option value="active">Active</option><option value="sold">Vendue</option><option value="rented">Louée</option><option value="expired">Expirée</option><option value="rejected">Rejetée</option>
-                            </select>
-                        </div>
-                        <div><label style="color:#aaa;font-size:13px">Annonce vedette</label>
-                            <select id="editFeatured" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="0">Non</option><option value="1">Oui ⭐</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-gold" onclick="saveEditProperty()" style="margin-top:24px;width:100%"><i class="fas fa-save"></i> Enregistrer les modifications</button>
+                    <div class="toolbar-right"><button class="btn-gold" onclick="openPropModal()"><i class="fas fa-plus"></i> Ajouter</button></div>
                 </div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>*</th><th>Titre</th><th>Type</th><th>Categorie</th><th>Wilaya</th><th>Prix</th><th>Statut</th><th>Vues</th><th>Actions</th></tr></thead><tbody id="adminPropsBody"><tr><td colspan="9" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
             </div>
 
-            <!-- PAYMENTS TAB -->
-            <div class="admin-tab" id="tab-payments" style="display:none">
-                <div class="admin-header"><h1><i class="fas fa-credit-card"></i> Paiements</h1><button class="btn-gold-sm" onclick="loadAdminPayments()"><i class="fas fa-sync-alt"></i> Actualiser</button></div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead><tr><th>ID</th><th>Utilisateur</th><th>Type</th><th>Montant</th><th>Annonce</th><th>Réf.</th><th>Statut</th><th>Actions</th></tr></thead>
-                        <tbody id="adminPaysBody"><tr><td colspan="8" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
-                    </table>
-                </div>
+            <!-- PAYMENTS -->
+            <div class="tab-content" id="tabPayments" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><select id="payFilterStatus" onchange="filterAdminPayments()" class="toolbar-select"><option value="">Tous</option><option value="pending">En attente</option><option value="confirmed">Confirme</option><option value="rejected">Rejete</option></select></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Date</th><th>Utilisateur</th><th>Type</th><th>Montant</th><th>RIP Client</th><th>Annonce</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="adminPaymentsBody"><tr><td colspan="8" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
             </div>
 
-            <!-- ADD PROPERTY MODAL (ADMIN) -->
-            <div id="addPropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto">
-                <div style="max-width:700px;margin:40px auto;background:var(--card);border-radius:16px;padding:32px;position:relative">
-                    <button onclick="closeAddPropertyModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#fff;font-size:24px;cursor:pointer"><i class="fas fa-times"></i></button>
-                    <h2 style="margin-bottom:24px;color:var(--accent)"><i class="fas fa-plus-circle"></i> Nouvelle annonce (Admin)</h2>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div><label style="color:#aaa;font-size:13px">Type</label><select id="addType" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="vente">Vente</option><option value="location">Location</option></select></div>
-                        <div><label style="color:#aaa;font-size:13px">Catégorie</label><select id="addCategory" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Commercial</option><option value="garage">Garage</option></select></div>
-                        <div style="grid-column:1/-1"><label style="color:#aaa;font-size:13px">Titre</label><input type="text" id="addTitle" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff" placeholder="Ex: Appartement F3 Alger centre"></div>
-                        <div style="grid-column:1/-1"><label style="color:#aaa;font-size:13px">Description</label><textarea id="addDescription" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;resize:vertical" placeholder="Description détaillée..."></textarea></div>
-                        <div><label style="color:#aaa;font-size:13px">Prix (DZ)</label><input type="number" id="addPrice" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Surface (m²)</label><input type="number" id="addSurface" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Wilaya</label>
-                            <select id="addWilaya" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                                <option value="">Choisir...</option><option>Adrar</option><option>Chlef</option><option>Laghouat</option><option>Oum El Bouaghi</option><option>Batna</option><option>Béjaïa</option><option>Biskra</option><option>Béchar</option><option>Blida</option><option>Bouira</option><option>Tamanrasset</option><option>Tébessa</option><option>Tlemcen</option><option>Tiaret</option><option>Tizi Ouzou</option><option>Alger</option><option>Djelfa</option><option>Jijel</option><option>Sétif</option><option>Saïda</option><option>Skikda</option><option>Sidi Bel Abbès</option><option>Annaba</option><option>Guelma</option><option>Constantine</option><option>Médéa</option><option>Mostaganem</option><option>M'Sila</option><option>Mascara</option><option>Ouargla</option><option>Oran</option><option>El Bayadh</option><option>Illizi</option><option>Bordj Bou Arréridj</option><option>Boumerdès</option><option>El Tarf</option><option>Tindouf</option><option>Tissemsilt</option><option>El Oued</option><option>Khenchela</option><option>Souk Ahras</option><option>Tipaza</option><option>Mila</option><option>Aïn Defla</option><option>Naâma</option><option>Aïn Témouchent</option><option>Ghardaïa</option><option>Relizane</option><option>El M'Ghair</option><option>El Meniaa</option><option>Ouled Djellal</option><option>Bordj Badji Mokhtar</option><option>Béni Abbès</option><option>Timimoun</option><option>Touggourt</option><option>Djanet</option><option>In Salah</option><option>In Guezzam</option>
-                            </select>
+            <!-- ESTIMATIONS -->
+            <div class="tab-content" id="tabEstimations" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-calculator"></i> Demandes estimation</div></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Date</th><th>Nom</th><th>Email</th><th>Telephone</th><th>Categorie</th><th>Wilaya</th><th>Surface</th><th>Actions</th></tr></thead><tbody id="adminEstimationsBody"><tr><td colspan="8" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- USERS -->
+            <div class="tab-content" id="tabUsers" style="display:none">
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Nom</th><th>Email</th><th>Telephone</th><th>RIP BaridiMob</th><th>Role</th><th>Date</th><th>Actions</th></tr></thead><tbody id="adminUsersBody"><tr><td colspan="7" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- ADMINS -->
+            <div class="tab-content" id="tabAdmins" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-user-shield"></i> Gestion des administrateurs</div></div><div class="toolbar-right"><button class="btn-gold" onclick="openAdminModal()"><i class="fas fa-plus"></i> Ajouter admin</button></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Nom</th><th>Email</th><th>Date</th><th>Actions</th></tr></thead><tbody id="adminAdminsBody"><tr><td colspan="4" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- CONTACTS -->
+            <div class="tab-content" id="tabContacts" style="display:none">
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Date</th><th>Nom</th><th>Email</th><th>Sujet</th><th>Message</th><th>Actions</th></tr></thead><tbody id="adminContactsBody"><tr><td colspan="6" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- PROMOTIONS -->
+            <div class="tab-content" id="tabPromotions" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-briefcase"></i> Professionnels</div></div><div class="toolbar-right"><button class="btn-gold" onclick="openPromoModal()"><i class="fas fa-plus"></i> Ajouter</button></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Logo</th><th>Entreprise</th><th>Type</th><th>Wilaya</th><th>Contact</th><th>Statut</th><th>*</th><th>Actions</th></tr></thead><tbody id="adminPromosBody"><tr><td colspan="8" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- BANNERS -->
+            <div class="tab-content" id="tabBanners" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-ad"></i> Bannieres</div></div><div class="toolbar-right"><button class="btn-gold" onclick="openBannerModal()"><i class="fas fa-plus"></i> Ajouter</button></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Titre</th><th>Position</th><th>Lien</th><th>Champ1</th><th>Champ2</th><th>Champ3</th><th>Image</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="adminBannersBody"><tr><td colspan="9" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- FORM FIELDS -->
+            <div class="tab-content" id="tabFormfields" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-wpforms"></i> Champs du formulaire</div></div><div class="toolbar-right"><button class="btn-gold" onclick="openFormFieldModal()"><i class="fas fa-plus"></i> Ajouter champ</button></div></div>
+                <div class="info-box" style="margin-bottom:15px"><i class="fas fa-info-circle"></i> Ajoutez des champs personnalises au formulaire de publication.</div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Label</th><th>Cle</th><th>Type</th><th>Section</th><th>Requis</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="adminFormFieldsBody"><tr><td colspan="7" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- CONTENT BLOCKS -->
+            <div class="tab-content" id="tabContent" style="display:none">
+                <div class="toolbar"><div class="toolbar-left"><div class="toolbar-title"><i class="fas fa-newspaper"></i> Blocs de contenu</div></div><div class="toolbar-right"><button class="btn-gold" onclick="openContentBlockModal()"><i class="fas fa-plus"></i> Ajouter bloc</button></div></div>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Titre</th><th>Slug</th><th>Image</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="adminContentBody"><tr><td colspan="5" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody></table></div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="tab-content" id="tabSettings" style="display:none">
+                <div class="settings-layout">
+                    <div class="settings-nav">
+                        <a href="#" onclick="showSettingsSection('compte');return false" class="settings-nav-item active" id="snavCompte"><i class="fas fa-user-shield"></i> Mon Compte</a>
+                        <a href="#" onclick="showSettingsSection('apparence');return false" class="settings-nav-item" id="snavApparence"><i class="fas fa-palette"></i> Apparence</a>
+                        <a href="#" onclick="showSettingsSection('contenu');return false" class="settings-nav-item" id="snavContenu"><i class="fas fa-file-alt"></i> Contenu</a>
+                        <a href="#" onclick="showSettingsSection('paiement');return false" class="settings-nav-item" id="snavPaiement"><i class="fas fa-credit-card"></i> Paiement</a>
+                        <a href="#" onclick="showSettingsSection('sections');return false" class="settings-nav-item" id="snavSections"><i class="fas fa-eye"></i> Sections</a>
+                        <a href="#" onclick="showSettingsSection('maintenance');return false" class="settings-nav-item" id="snavMaintenance"><i class="fas fa-tools"></i> Maintenance</a>
+                    </div>
+                    <div class="settings-content">
+                        <div class="settings-panel" id="spanelCompte">
+                            <div class="panel-header"><i class="fas fa-user-shield"></i><div><h3>Mon Compte Admin</h3><p>Gegez votre email et mot de passe</p></div></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-envelope"></i> Changer email</h4>
+                                <div class="form-grid"><div class="form-field"><label>Nouvel email</label><input type="email" id="setNewEmail" placeholder="nouveau@email.dz"></div><div class="form-field"><label>Mot de passe actuel</label><input type="password" id="setCurPwdEmail"></div></div>
+                                <div class="form-actions-right"><button class="btn-gold" onclick="changeAdminEmail()"><i class="fas fa-save"></i> Changer email</button></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-key"></i> Changer mot de passe</h4>
+                                <div class="form-grid"><div class="form-field"><label>Nouveau mot de passe</label><input type="password" id="setNewPwd"></div><div class="form-field"><label>Mot de passe actuel</label><input type="password" id="setCurPwdPass"></div></div>
+                                <div class="form-actions-right"><button class="btn-gold" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Changer mot de passe</button></div>
+                            </div>
                         </div>
-                        <div><label style="color:#aaa;font-size:13px">Commune</label><input type="text" id="addCommune" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Adresse</label><input type="text" id="addAddress" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Pièces</label><input type="number" id="addRooms" value="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Salles de bain</label><input type="number" id="addBathrooms" value="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Parking</label><select id="addParking" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="non">Non</option><option value="oui">Oui</option></select></div>
-                        <div><label style="color:#aaa;font-size:13px">État</label><select id="addCondition" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="neuf">Neuf</option><option value="bon">Bon</option><option value="à rénover">À rénover</option></select></div>
-                        <div><label style="color:#aaa;font-size:13px">Âge (ans)</label><input type="number" id="addAge" value="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"></div>
-                        <div><label style="color:#aaa;font-size:13px">Numéro de contact WhatsApp</label><input type="text" id="addContactPhone" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff" placeholder="05XXXXXXXX ou numéro plateforme"></div>
+                        <div class="settings-panel" id="spanelApparence" style="display:none">
+                            <div class="panel-header"><i class="fas fa-palette"></i><div><h3>Apparence</h3><p>Modifiez couleurs et visuel</p></div></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-fill-drip"></i> Couleurs</h4>
+                                <div class="color-grid">
+                                    <div class="color-field"><label>Primaire</label><div class="color-row"><input type="color" id="setColorPrimary" value="#1a1a2e" onchange="livePreviewColor('primary',this.value)"><input type="text" id="setColorPrimaryHex" value="#1a1a2e" oninput="syncColor('primary',this.value)"></div></div>
+                                    <div class="color-field"><label>Secondaire</label><div class="color-row"><input type="color" id="setColorSecondary" value="#16213e" onchange="livePreviewColor('secondary',this.value)"><input type="text" id="setColorSecondaryHex" value="#16213e" oninput="syncColor('secondary',this.value)"></div></div>
+                                    <div class="color-field"><label>Accent (dore)</label><div class="color-row"><input type="color" id="setColorAccent" value="#d4a254" onchange="livePreviewColor('accent',this.value)"><input type="text" id="setColorAccentHex" value="#d4a254" oninput="syncColor('accent',this.value)"></div></div>
+                                    <div class="color-field"><label>Rouge</label><div class="color-row"><input type="color" id="setColorRed" value="#e94560" onchange="livePreviewColor('red',this.value)"><input type="text" id="setColorRedHex" value="#e94560" oninput="syncColor('red',this.value)"></div></div>
+                                </div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-image"></i> Image de fond</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Upload image de fond</label><input type="file" id="setBackgroundImage" accept="image/*"></div></div>
+                                <div class="info-box"><i class="fas fa-info-circle"></i> Image affichee en fond du site. Laissez vide pour couleur unie.</div>
+                            </div>
+                            <div class="form-actions-right" style="margin-top:20px"><button class="btn-gold" onclick="saveAppearance()"><i class="fas fa-save"></i> Enregistrer apparence</button></div>
+                        </div>
+                        <div class="settings-panel" id="spanelContenu" style="display:none">
+                            <div class="panel-header"><i class="fas fa-file-alt"></i><div><h3>Contenu</h3><p>Modifiez les textes du site</p></div></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-heading"></i> Hero</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Titre principal</label><input type="text" id="setHeroTitle"></div><div class="form-field full"><label>Sous-titre</label><input type="text" id="setHeroSubtitle"></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-clipboard-list"></i> Comment ca marche</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Texte personnalise</label><textarea id="setStepsText" rows="3"></textarea></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-file-contract"></i> Gestion locative</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Texte gestion</label><textarea id="setGestionText" rows="3"></textarea></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-calculator"></i> Reponse auto estimation</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Message automatique</label><textarea id="setEstAutoReply" rows="2"></textarea></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-globe"></i> Langue par defaut</h4>
+                                <div class="form-grid"><div class="form-field"><label>Langue</label><select id="setDefaultLang"><option value="fr">Francais</option><option value="ar">Arabe</option><option value="en">English</option></select></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-percentage"></i> Page Tarifs</h4>
+                                <div class="toggle-grid" style="grid-template-columns:1fr">
+                                    <div class="toggle-card">
+                                        <div class="toggle-card-icon"><i class="fas fa-percentage"></i></div>
+                                        <div class="toggle-card-info"><h4>Afficher la page Tarifs</h4><p>Active/desactive le lien vers la page des tarifs</p></div>
+                                        <div class="toggle-switch" id="toggleTarifs" onclick="toggleSwitch(this,'section_tarifs_visible')"><div class="toggle-knob"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions-right" style="margin-top:20px"><button class="btn-gold" onclick="saveContent()"><i class="fas fa-save"></i> Enregistrer contenu</button></div>
+                        </div>
+                        <div class="settings-panel" id="spanelPaiement" style="display:none">
+                            <div class="panel-header"><i class="fas fa-credit-card"></i><div><h3>Paiement BaridiMob</h3><p>Configurez votre compte BaridiMob</p></div></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-university"></i> RIP BaridiMob</h4>
+                                <div class="form-grid"><div class="form-field full"><label>RIP (20 chiffres)</label><input type="text" id="setRip" placeholder="007999XXXXXXXXXXXX" style="font-family:monospace;letter-spacing:1px"></div></div>
+                                <div class="rip-preview" style="background:rgba(212,162,84,.08);padding:12px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,162,84,.2)"><small style="color:var(--text);opacity:.6">RIP actuel :</small><div id="ripDisplay" style="color:var(--accent);font-weight:600;font-family:monospace;letter-spacing:1px"></div></div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fas fa-tags"></i> Frais et Commissions</h4>
+                                <div class="form-grid">
+                                    <div class="form-field"><label>Publication (DZD)</label><input type="number" id="setFraisPublication" value="1000"></div>
+                                    <div class="form-field"><label>Commission vente (%)</label><input type="number" id="setCommissionVente" value="2" step="0.1"></div>
+                                    <div class="form-field"><label>Commission location (DZD)</label><input type="number" id="setCommissionLocation" value="5000"></div>
+                                </div>
+                            </div>
+                            <div class="panel-divider"></div>
+                            <div class="panel-section">
+                                <h4><i class="fab fa-whatsapp"></i> WhatsApp Admin</h4>
+                                <div class="form-grid"><div class="form-field full"><label>Numero (213...)</label><input type="text" id="setWhatsapp" placeholder="213550000000"></div></div>
+                            </div>
+                            <div class="form-actions-right" style="margin-top:20px"><button class="btn-gold" onclick="savePayment()"><i class="fas fa-save"></i> Enregistrer paiement</button></div>
+                        </div>
+                        <div class="settings-panel" id="spanelSections" style="display:none">
+                            <div class="panel-header"><i class="fas fa-eye"></i><div><h3>Sections visibles</h3><p>Choisissez les sections affichees</p></div></div>
+                            <div class="toggle-grid">
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-clipboard-list"></i></div><div class="toggle-card-info"><h4>Comment ca marche ?</h4><p>Les 3 etapes</p></div><div class="toggle-switch" id="toggleSteps" onclick="toggleSwitch(this,'section_steps_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-percentage"></i></div><div class="toggle-card-info"><h4>Commissions</h4><p>Tarifs</p></div><div class="toggle-switch" id="toggleCommissions" onclick="toggleSwitch(this,'section_commissions_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-calculator"></i></div><div class="toggle-card-info"><h4>Estimation</h4><p>Formulaire estimation</p></div><div class="toggle-switch" id="toggleEstimation" onclick="toggleSwitch(this,'section_estimation_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-file-contract"></i></div><div class="toggle-card-info"><h4>Gestion locative</h4><p>Services gestion</p></div><div class="toggle-switch" id="toggleGestion" onclick="toggleSwitch(this,'section_gestion_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-quote-left"></i></div><div class="toggle-card-info"><h4>Temoignages</h4><p>Avis utilisateurs</p></div><div class="toggle-switch" id="toggleTestimonials" onclick="toggleSwitch(this,'section_testimonials_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-envelope"></i></div><div class="toggle-card-info"><h4>Contact</h4><p>Formulaire + BaridiMob</p></div><div class="toggle-switch" id="toggleContact" onclick="toggleSwitch(this,'section_contact_visible')"><div class="toggle-knob"></div></div></div>
+                                <div class="toggle-card"><div class="toggle-card-icon"><i class="fas fa-briefcase"></i></div><div class="toggle-card-info"><h4>Promotions</h4><p>Partenaires</p></div><div class="toggle-switch" id="togglePromos" onclick="toggleSwitch(this,'section_promos_visible')"><div class="toggle-knob"></div></div></div>
+                            </div>
+                            <div class="form-actions-right" style="margin-top:24px"><button class="btn-gold" onclick="saveToggles()"><i class="fas fa-save"></i> Enregistrer sections</button></div>
+                        </div>
+                        <div class="settings-panel" id="spanelMaintenance" style="display:none">
+                            <div class="panel-header panel-header-danger"><i class="fas fa-tools"></i><div><h3>Mode maintenance</h3><p>Activez pour cacher le site aux visiteurs</p></div></div>
+                            <div class="danger-box">
+                                <div class="danger-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="danger-content"><h4>Attention : Mode maintenance</h4><p>Les visiteurs verront un ecran de maintenance.</p></div>
+                                <div class="toggle-switch toggle-switch-danger" id="toggleMaintenance" onclick="toggleSwitch(this,'maintenance_mode')"><div class="toggle-knob"></div></div>
+                            </div>
+                            <div class="form-actions-right" style="margin-top:24px"><button class="btn-danger" onclick="saveMaintenance()"><i class="fas fa-power-off"></i> Enregistrer</button></div>
+                        </div>
                     </div>
-                    <div style="margin-top:16px">
-                        <label style="color:#aaa;font-size:13px">Photos (optionnel)</label>
-                        <input type="file" id="addImages" accept="image/*" multiple style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-                    </div>
-                    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div><label style="color:#aaa;font-size:13px">Statut</label><select id="addStatus" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="active">Active</option><option value="pending">En attente</option></select></div>
-                        <div><label style="color:#aaa;font-size:13px">Vedette</label><select id="addFeatured" style="width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><option value="0">Non</option><option value="1">Oui ⭐</option></select></div>
-                    </div>
-                    <button class="btn-gold" onclick="submitAdminProperty()" style="margin-top:24px;width:100%"><i class="fas fa-plus-circle"></i> Créer l'annonce</button>
-                </div>
-            </div>
-
-            <!-- PAYMENTS TAB (moved) -->
-
-            <!-- USERS TAB -->
-            <div class="admin-tab" id="tab-users" style="display:none">
-                <div class="admin-header"><h1><i class="fas fa-users"></i> Utilisateurs</h1><button class="btn-gold-sm" onclick="loadAdminUsers()"><i class="fas fa-sync-alt"></i> Actualiser</button></div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>RIP BaridiMob</th><th>Rôle</th><th>Inscrit le</th><th>Actions</th></tr></thead>
-                        <tbody id="adminUsersBody"><tr><td colspan="8" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- CONTACTS TAB -->
-            <div class="admin-tab" id="tab-contacts" style="display:none">
-                <div class="admin-header"><h1><i class="fas fa-envelope"></i> Messages reçus</h1><button class="btn-gold-sm" onclick="loadAdminContacts()"><i class="fas fa-sync-alt"></i> Actualiser</button></div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead><tr><th>Date</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Sujet</th><th>Message</th><th>Actions</th></tr></thead>
-                        <tbody id="adminContactsBody"><tr><td colspan="7" class="admin-empty"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SETTINGS TAB -->
-            <div class="admin-tab" id="tab-settings" style="display:none">
-                <div class="admin-header"><h1><i class="fas fa-cog"></i> Paramètres</h1></div>
-                <div class="settings-form">
-                    <h3 style="color:var(--accent);margin:20px 0 12px"><i class="fas fa-money-bill-wave"></i> Tarification</h3>
-                    <label>Commission vente (%)</label><input type="number" id="setCommVente" step="0.1">
-                    <label>Commission location (DZ)</label><input type="number" id="setCommLocation">
-                    <label>Frais publication (DZ)</label><input type="number" id="setFraisPub">
-
-                    <h3 style="color:var(--accent);margin:24px 0 12px"><i class="fas fa-mobile-alt"></i> BaridiMob</h3>
-                    <label>RIP BaridiMob</label><input type="text" id="setRip" placeholder="RIP pour recevoir les paiements">
-
-                    <h3 style="color:var(--accent);margin:24px 0 12px"><i class="fab fa-whatsapp"></i> Contact</h3>
-                    <label>WhatsApp admin (format: 213550000000)</label><input type="text" id="setWhatsapp" placeholder="213550000000">
-
-                    <h3 style="color:var(--accent);margin:24px 0 12px"><i class="fas fa-globe"></i> Site</h3>
-                    <label>Nom du site</label><input type="text" id="setSiteName" placeholder="ImmoElite">
-
-                    <button class="btn-gold" onclick="saveSettings()" style="margin-top:24px"><i class="fas fa-save"></i> Enregistrer les paramètres</button>
                 </div>
             </div>
         </main>
     </div>
-    <div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="propEditModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('propEditModal')">x</button><h3><i class="fas fa-home"></i> Modifier annonce</h3><div class="modal-grid"><div class="modal-field full-width"><label>Titre</label><input type="text" id="editTitle"></div><div class="modal-field"><label>Type</label><select id="editType"><option value="vente">Vente</option><option value="location">Location</option></select></div><div class="modal-field"><label>Categorie</label><select id="editCategory"><option value="appartement">Appartement</option><option value="villa">Villa</option><option value="terrain">Terrain</option><option value="commercial">Commercial</option><option value="garage">Garage</option><option value="bureautique">Bureautique</option></select></div><div class="modal-field"><label>Wilaya</label><input type="text" id="editWilaya"></div><div class="modal-field"><label>Commune</label><input type="text" id="editCommune"></div><div class="modal-field"><label>Adresse</label><input type="text" id="editAddress"></div><div class="modal-field"><label>Prix</label><input type="number" id="editPrice"></div><div class="modal-field"><label>Surface</label><input type="number" id="editSurface"></div><div class="modal-field"><label>Pieces</label><input type="number" id="editRooms"></div><div class="modal-field"><label>Latitude</label><input type="text" id="editLat"></div><div class="modal-field"><label>Longitude</label><input type="text" id="editLng"></div><div class="modal-field full-width"><label>Description</label><textarea id="editDescription"></textarea></div><div class="modal-field"><label>Statut</label><select id="editStatus"><option value="active">Active</option><option value="pending">En attente</option><option value="sold">Vendu</option><option value="rented">Loue</option><option value="expired">Expire</option></select></div><div class="modal-field"><label>Telephone</label><input type="text" id="editContactPhone"></div><div class="modal-field"><label>Vedette</label><select id="editFeatured"><option value="0">Non</option><option value="1">Oui</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('propEditModal')">Annuler</button><button class="btn-save" onclick="savePropertyEdit()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="modal-overlay" id="promoModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('promoModal')">x</button><h3><i class="fas fa-briefcase"></i> Promotion</h3><div class="modal-grid"><div class="modal-field full-width"><label>Entreprise *</label><input type="text" id="promoCompanyName"></div><div class="modal-field"><label>Type</label><select id="promoType"><option value="agence">Agence</option><option value="promoteur">Promoteur</option><option value="entreprise">Entreprise</option><option value="partenaire">Partenaire</option></select></div><div class="modal-field"><label>Wilaya</label><input type="text" id="promoWilaya"></div><div class="modal-field"><label>Telephone</label><input type="text" id="promoPhone"></div><div class="modal-field"><label>Email</label><input type="email" id="promoEmail"></div><div class="modal-field"><label>Site web</label><input type="url" id="promoWebsite"></div><div class="modal-field"><label>Debut</label><input type="date" id="promoStart"></div><div class="modal-field"><label>Fin</label><input type="date" id="promoEnd"></div><div class="modal-field full-width"><label>Description</label><textarea id="promoDescription" rows="3"></textarea></div><div class="modal-field full-width"><label>Texte promo</label><textarea id="promoText" rows="2"></textarea></div><div class="modal-field"><label>Logo</label><input type="file" id="promoLogo" accept="image/*"></div><div class="modal-field"><label>Photos</label><input type="file" id="promoPhotos" accept="image/*" multiple></div><div class="modal-field"><label>Champ 1</label><input type="text" id="promoCustom1"></div><div class="modal-field"><label>Champ 2</label><input type="text" id="promoCustom2"></div><div class="modal-field"><label>Champ 3</label><input type="text" id="promoCustom3"></div><div class="modal-field"><label>Champ 4</label><input type="text" id="promoCustom4"></div><div class="modal-field"><label>Champ 5</label><input type="text" id="promoCustom5"></div><div class="modal-field"><label>Programme</label><select id="promoIsProgram"><option value="0">Non</option><option value="1">Oui</option></select></div><div class="modal-field"><label>Statut</label><select id="promoStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="modal-field"><label>Vedette</label><select id="promoFeatured"><option value="0">Non</option><option value="1">Oui</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('promoModal')">Annuler</button><button class="btn-save" onclick="savePromo()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="modal-overlay" id="bannerModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('bannerModal')">x</button><h3><i class="fas fa-ad"></i> Banniere</h3><div class="modal-grid"><div class="modal-field full-width"><label>Titre *</label><input type="text" id="bannerTitle"></div><div class="modal-field full-width"><label>Texte</label><textarea id="bannerText" rows="2"></textarea></div><div class="modal-field"><label>Lien</label><input type="url" id="bannerLink"></div><div class="modal-field"><label>Position</label><select id="bannerPosition"><option value="top">Haut</option><option value="hero">Hero</option><option value="footer">Footer</option><option value="sidebar">Sidebar</option></select></div><div class="modal-field"><label>Image</label><input type="file" id="bannerImage" accept="image/*"></div><div class="modal-field"><label>Active</label><select id="bannerActive"><option value="1">Oui</option><option value="0">Non</option></select></div><div class="modal-field"><label>Champ 1</label><input type="text" id="bannerCustom1"></div><div class="modal-field"><label>Champ 2</label><input type="text" id="bannerCustom2"></div><div class="modal-field"><label>Champ 3</label><input type="text" id="bannerCustom3"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('bannerModal')">Annuler</button><button class="btn-save" onclick="saveBanner()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="modal-overlay" id="adminModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('adminModal')">x</button><h3><i class="fas fa-user-shield"></i> Ajouter admin</h3><div class="modal-grid"><div class="modal-field"><label>Nom *</label><input type="text" id="adminName"></div><div class="modal-field"><label>Email *</label><input type="email" id="adminEmail"></div><div class="modal-field"><label>Mot de passe *</label><input type="password" id="adminPassword"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('adminModal')">Annuler</button><button class="btn-save" onclick="saveAdmin()"><i class="fas fa-save"></i> Creer admin</button></div></div></div>
+
+    <div class="modal-overlay" id="userEditModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('userEditModal')">x</button><h3><i class="fas fa-user-edit"></i> Modifier utilisateur</h3><div class="modal-grid"><div class="modal-field"><label>Nom</label><input type="text" id="editUserName"></div><div class="modal-field"><label>Email</label><input type="email" id="editUserEmail"></div><div class="modal-field"><label>Telephone</label><input type="text" id="editUserPhone"></div><div class="modal-field"><label>RIP BaridiMob</label><input type="text" id="editUserRip"></div><div class="modal-field"><label>Role</label><select id="editUserRole"><option value="user">Utilisateur</option><option value="admin">Admin</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('userEditModal')">Annuler</button><button class="btn-save" onclick="saveUserEdit()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="modal-overlay" id="userMessageModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('userMessageModal')">x</button><h3><i class="fas fa-envelope"></i> Envoyer message</h3><div class="modal-grid"><div class="modal-field full-width"><label>A</label><input type="text" id="msgUserName" readonly></div><div class="modal-field full-width"><label>Sujet</label><input type="text" id="msgSubject"></div><div class="modal-field full-width"><label>Message</label><textarea id="msgBody" rows="5"></textarea></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('userMessageModal')">Annuler</button><button class="btn-save" onclick="sendUserMessage()"><i class="fas fa-paper-plane"></i> Envoyer</button></div></div></div>
+
+    <div class="modal-overlay" id="formFieldModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('formFieldModal')">x</button><h3><i class="fas fa-wpforms"></i> Champ personnalise</h3><div class="modal-grid"><div class="modal-field"><label>Label *</label><input type="text" id="ffLabel"></div><div class="modal-field"><label>Cle *</label><input type="text" id="ffKey"></div><div class="modal-field"><label>Type</label><select id="ffType"><option value="text">Texte</option><option value="number">Nombre</option><option value="textarea">Zone de texte</option><option value="select">Liste</option><option value="checkbox">Case a cocher</option></select></div><div class="modal-field"><label>Section</label><select id="ffSection"><option value="info">Info (etape 1)</option><option value="location">Localisation (etape 2)</option><option value="details">Details (etape 2)</option><option value="custom">Personnalise</option></select></div><div class="modal-field"><label>Placeholder</label><input type="text" id="ffPlaceholder"></div><div class="modal-field"><label>Options (virgules)</label><input type="text" id="ffOptions"></div><div class="modal-field"><label>Requis</label><select id="ffRequired"><option value="0">Non</option><option value="1">Oui</option></select></div><div class="modal-field"><label>Actif</label><select id="ffActive"><option value="1">Oui</option><option value="0">Non</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('formFieldModal')">Annuler</button><button class="btn-save" onclick="saveFormField()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="modal-overlay" id="contentBlockModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('contentBlockModal')">x</button><h3><i class="fas fa-newspaper"></i> Bloc de contenu</h3><div class="modal-grid"><div class="modal-field"><label>Titre *</label><input type="text" id="cbTitle"></div><div class="modal-field"><label>Slug</label><input type="text" id="cbSlug"></div><div class="modal-field full-width"><label>Contenu</label><textarea id="cbBody" rows="5"></textarea></div><div class="modal-field"><label>Image</label><input type="file" id="cbImage" accept="image/*"></div><div class="modal-field"><label>Actif</label><select id="cbActive"><option value="1">Oui</option><option value="0">Non</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal('contentBlockModal')">Annuler</button><button class="btn-save" onclick="saveContentBlock()"><i class="fas fa-save"></i> Enregistrer</button></div></div></div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle" id="toastIcon"></i><span id="toastMsg"></span></div>
     <script src="admin.js"></script>
 </body>
 </html>
