@@ -116,7 +116,7 @@ function applySettings(s) {
 function showSettingsSection(section) {
     document.querySelectorAll('.settings-panel').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.settings-nav-item').forEach(el => el.classList.remove('active'));
-    document.getElementById('spanel' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = '';
+    document.getElementById('spanel' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = 'block';
     document.getElementById('snav' + section.charAt(0).toUpperCase() + section.slice(1)).classList.add('active');
 }
 
