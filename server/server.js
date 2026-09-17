@@ -13,6 +13,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
 
+// Ensure uploads directory exists (Git ne suit pas les dossiers vides)
+const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
 // File upload config
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'public', 'uploads')),
