@@ -422,7 +422,7 @@ function loadAdminUsers() {
         .then(r => r.json())
         .then(users => {
             const tbody = document.getElementById('adminUsersBody');
-            tbody.innerHTML = users.map(u => '<tr><td>' + u.name + '</td><td>' + u.email + '</td><td>' + (u.phone||'--') + '</td><td>' + (u.baridimob_rip||'--') + '</td><td><span class="badge">' + u.role + '</span></td><td>' + new Date(u.created_at).toLocaleDateString('fr') + '</td><td><button class="btn-sm" onclick="editUser(' + u.id + ')"><i class="fas fa-edit"></i></button> <button class="btn-sm" onclick="messageUser(' + u.id + ','' + u.name.replace(/'/g,"\'") + '')"><i class="fas fa-envelope"></i></button> <button class="btn-sm btn-sm-danger" onclick="deleteUser(' + u.id + ')"><i class="fas fa-trash"></i></button></td></tr>').join('') || '<tr><td colspan="7" class="admin-empty">Aucun utilisateur</td></tr>';
+            tbody.innerHTML = users.map(u => '<tr><td>' + u.name + '</td><td>' + u.email + '</td><td>' + (u.phone||'--') + '</td><td>' + (u.baridimob_rip||'--') + '</td><td><span class="badge">' + u.role + '</span></td><td>' + new Date(u.created_at).toLocaleDateString('fr') + '</td><td><button class="btn-sm" onclick="editUser(' + u.id + ')"><i class="fas fa-edit"></i></button> <button class="btn-sm" onclick="messageUser(' + u.id + ', \'' + (u.name||'').replace(/'/g,"\\'") + '\')"><i class="fas fa-envelope"></i></button> <button class="btn-sm btn-sm-danger" onclick="deleteUser(' + u.id + ')"><i class="fas fa-trash"></i></button></td></tr>').join('') || '<tr><td colspan="7" class="admin-empty">Aucun utilisateur</td></tr>';
         })
         .catch(() => {});
 }
