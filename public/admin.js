@@ -4,6 +4,7 @@
 
 let token = localStorage.getItem('immoelite_token');
 let settingsCache = {};
+let contactsCache = [];
 let editingId = null;
 let editingUserId = null;
 let editingFormFieldId = null;
@@ -140,16 +141,23 @@ function syncColor(varName, value) {
 }
 
 function saveAppearance() {
-    const fd = new FormData();
-    fd.append('primary_color', document.getElementById('setColorPrimary').value);
-    fd.append('secondary_color', document.getElementById('setColorSecondary').value);
-    fd.append('accent_color', document.getElementById('setColorAccent').value);
-    fd.append('red_color', document.getElementById('setColorRed').value);
-    const bgFile = document.getElementById('setBackgroundImage').files[0];
-    if (bgFile) fd.append('background_image', bgFile);
-    fetch('/api/settings', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd })
+    const data = {
+        primary_color: document.getElementById('setColorPrimary').value,
+        secondary_color: document.getElementById('setColorSecondary').value,
+        accent_color: document.getElementById('setColorAccent').value,
+        red_color: document.getElementById('setColorRed').value
+    };
+    fetch('/api/settings', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(r => r.json())
-        .then(d => { showToast('Apparence enregistree !'); loadSettings(); })
+        .then(() => {
+            const bgFile = document.getElementById('setBackgroundImage').files[0];
+            if (bgFile) {
+                const fd = new FormData();
+                fd.append('image', bgFile);
+                return fetch('/api/admin/upload-bg', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd }).then(r => r.json());
+            }
+        })
+        .then(() => { showToast('Apparence enregistree !'); loadSettings(); })
         .catch(() => showToast('Erreur', 'error'));
 }
 
@@ -163,7 +171,7 @@ function saveContent() {
         default_language: document.getElementById('setDefaultLang').value,
         section_tarifs_visible: settingsCache.section_tarifs_visible || '0'
     };
-    fetch('/api/settings', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    fetch('/api/settings', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(r => r.json())
         .then(d => showToast('Contenu enregistre !'))
         .catch(() => showToast('Erreur', 'error'));
@@ -177,7 +185,7 @@ function savePayment() {
         commission_location: document.getElementById('setCommissionLocation').value,
         whatsapp_number: document.getElementById('setWhatsapp').value
     };
-    fetch('/api/settings', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    fetch('/api/settings', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(r => r.json())
         .then(d => { showToast('Paiement enregistre !'); document.getElementById('ripDisplay').textContent = data.baridimob_rip; })
         .catch(() => showToast('Erreur', 'error'));
@@ -193,7 +201,7 @@ function saveToggles() {
         section_contact_visible: settingsCache.section_contact_visible || '1',
         section_promos_visible: settingsCache.section_promos_visible || '1'
     };
-    fetch('/api/settings', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    fetch('/api/settings', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(r => r.json())
         .then(d => showToast('Sections enregistrees !'))
         .catch(() => showToast('Erreur', 'error'));
@@ -201,7 +209,7 @@ function saveToggles() {
 
 function saveMaintenance() {
     const data = { maintenance_mode: settingsCache.maintenance_mode || '0' };
-    fetch('/api/settings', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    fetch('/api/settings', { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(r => r.json())
         .then(d => showToast('Maintenance enregistree !'))
         .catch(() => showToast('Erreur', 'error'));
@@ -529,11 +537,19 @@ function loadAdminContacts() {
     fetch('/api/admin/contacts', { headers: { 'Authorization': 'Bearer ' + token } })
         .then(r => r.json())
         .then(msgs => {
+            contactsCache = msgs;
             document.getElementById('badgeContacts').textContent = msgs.length;
             const tbody = document.getElementById('adminContactsBody');
-            tbody.innerHTML = msgs.map(m => '<tr><td>' + new Date(m.created_at).toLocaleDateString('fr') + '</td><td>' + m.name + '</td><td>' + m.email + '</td><td>' + (m.subject||'--') + '</td><td>' + (m.message||'').substring(0,60) + '</td><td><button class="btn-sm btn-sm-danger" onclick="deleteContact(' + m.id + ')"><i class="fas fa-trash"></i></button></td></tr>').join('') || '<tr><td colspan="6" class="admin-empty">Aucun message</td></tr>';
+            tbody.innerHTML = msgs.map(m => '<tr><td>' + new Date(m.created_at).toLocaleDateString('fr') + '</td><td>' + m.name + '</td><td>' + m.email + '</td><td>' + (m.subject||'--') + '</td><td>' + (m.message||'').substring(0,60) + '</td><td><button class="btn-sm" onclick="replyContact(' + m.id + ')" title="Repondre"><i class="fas fa-reply"></i></button> <button class="btn-sm btn-sm-danger" onclick="deleteContact(' + m.id + ')"><i class="fas fa-trash"></i></button></td></tr>').join('') || '<tr><td colspan="6" class="admin-empty">Aucun message</td></tr>';
         })
         .catch(() => {});
+}
+
+function replyContact(id) {
+    const m = (contactsCache || []).find(c => c.id === id);
+    if (!m) return;
+    const subject = 'Re: ' + (m.subject || 'Votre message');
+    window.location.href = 'mailto:' + m.email + '?subject=' + encodeURIComponent(subject);
 }
 
 function deleteContact(id) {
