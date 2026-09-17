@@ -387,6 +387,14 @@ app.get('/api/admin/users', authMiddleware, adminMiddleware, (req, res) => {
     });
 });
 
+app.get('/api/admin/users/:id', authMiddleware, adminMiddleware, (req, res) => {
+    db.get('SELECT id, name, email, phone, role, baridimob_rip, created_at FROM users WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: 'Utilisateur non trouve' });
+        res.json(row);
+    });
+});
+
 app.put('/api/admin/users/:id', authMiddleware, adminMiddleware, (req, res) => {
     const { name, phone, email, baridimob_rip, role } = req.body;
     const fields = [];
