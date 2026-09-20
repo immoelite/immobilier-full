@@ -23,8 +23,8 @@ function getProperties(filters = {}) {
         let params = ['active'];
 
         if (filters.type) { query += ' AND p.type = ?'; params.push(filters.type); }
-        if (filters.wilaya) { query += ' AND p.wilaya = ?'; params.push(filters.wilaya); }
-        if (filters.category) { query += ' AND p.category = ?'; params.push(filters.category); }
+        if (filters.wilaya) { query += ' AND LOWER(TRIM(p.wilaya)) = LOWER(TRIM(?))'; params.push(filters.wilaya); }
+        if (filters.category) { query += ' AND LOWER(TRIM(p.category)) = LOWER(TRIM(?))'; params.push(filters.category); }
         if (filters.min_price) { query += ' AND p.price >= ?'; params.push(filters.min_price); }
         if (filters.max_price) { query += ' AND p.price <= ?'; params.push(filters.max_price); }
         if (filters.min_surface) { query += ' AND p.surface >= ?'; params.push(filters.min_surface); }
